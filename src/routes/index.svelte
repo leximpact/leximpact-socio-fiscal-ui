@@ -52,6 +52,7 @@
     <li><a href="entities">Entities</a></li>
     <li><a href="parameters">Parameters</a></li>
     <li><a href="variables">Variables</a></li>
+    <li><a href="decomposition">Decomposition</a></li>
   </ul>
 
   <h2>Documentation</h2>

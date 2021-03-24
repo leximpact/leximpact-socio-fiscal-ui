@@ -1,46 +1,78 @@
 <script context="module" lang="ts">
+  import { decomposition, walkDecomposition } from "$lib/decomposition"
+
+  // See https://github.com/cbenz/openfisca-interactive/blob/master/waterfall.ipynb
+  const year = 2017
+  const variablesDecomposition = Object.fromEntries(
+    [...walkDecomposition(decomposition)]
+      .filter(
+        (node) =>
+          ![
+            "aide_embauche_pme",
+            "aide_premier_salarie",
+            "allegement_fillon",
+            "cotisations_employeur",
+            "cotisations_salariales",
+            "cout_du_travail",
+            "crds_salaire",
+            "credit_impot_competitivite_emploi",
+            "csg_deductible_salaire",
+            "csg_imposable_salaire",
+            "irpp",
+            "minima_sociaux",
+            "ppa",
+            "ppe",
+            "prestations_sociales",
+            "revenus_nets_du_travail",
+            "rsa",
+            "salaire_de_base",
+            "salaire_imposable",
+            "salaire_net",
+            "salaire_super_brut",
+            "salaire_super_brut_hors_allegements",
+            "tehr",
+          ].includes(node.code),
+      )
+      .map((node) => [node.code, { [year]: null }]),
+  )
+  const situation = {
+    individus: {
+      Claude: {
+        salaire_de_base: {
+          [year]: 20000,
+        },
+      },
+      Dominique: {
+        salaire_de_base: {
+          [year]: 30000,
+        },
+      },
+      Camille: {},
+    },
+    menages: {
+      menage_1: {
+        personne_de_reference: ["Claude"],
+        conjoint: ["Dominique"],
+        enfants: ["Camille"],
+        ...variablesDecomposition,
+      },
+    },
+    familles: {
+      famille_1: {
+        parents: ["Claude", "Dominique"],
+        enfants: ["Camille"],
+      },
+    },
+    foyers_fiscaux: {
+      foyer_fiscal_1: {
+        declarants: ["Claude", "Dominique"],
+        personnes_a_charge: ["Camille"],
+      },
+    },
+  }
+
   export async function load({ page, fetch, session, context }) {
     const url = "https://fr.openfisca.org/api/latest/calculate"
-    const situation = {
-      individus: {
-        Claude: {
-          salaire_de_base: {
-            "2017": 20000,
-          },
-        },
-        Dominique: {
-          salaire_de_base: {
-            "2017": 30000,
-          },
-        },
-        Camille: {},
-      },
-      menages: {
-        menage_1: {
-          personne_de_reference: ["Claude"],
-          conjoint: ["Dominique"],
-          enfants: ["Camille"],
-          revenu_disponible: {
-            "2017": null,
-          },
-          impots_directs: {
-            "2017": null,
-          },
-        },
-      },
-      familles: {
-        famille_1: {
-          parents: ["Claude", "Dominique"],
-          enfants: ["Camille"],
-        },
-      },
-      foyers_fiscaux: {
-        foyer_fiscal_1: {
-          declarants: ["Claude", "Dominique"],
-          personnes_a_charge: ["Camille"],
-        },
-      },
-    }
     const res = await fetch(url, {
       body: JSON.stringify(situation, null, 2),
       headers: {
@@ -49,17 +81,23 @@
       method: "POST",
     })
 
-    if (res.ok) {
+    if (!res.ok) {
+      console.error(
+        `Erreur ${res.status} while POSTing ${url}\n${JSON.stringify(
+          situation,
+          null,
+          2,
+        )}\n\n${await res.text()}`,
+      )
       return {
-        props: {
-          simulation: await res.json(),
-        },
+        status: res.status,
+        error: new Error(`Could not load ${url}`),
       }
     }
-
     return {
-      status: res.status,
-      error: new Error(`Could not load ${url}`),
+      props: {
+        simulation: await res.json(),
+      },
     }
   }
 </script>

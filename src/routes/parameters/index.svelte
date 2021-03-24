@@ -1,21 +1,21 @@
 <script context="module" lang="ts">
-	export async function load({ page, fetch, session, context }) {
-		const url = "https://fr.openfisca.org/api/latest/parameters";
-		const res = await fetch(url);
+  export async function load({ page, fetch, session, context }) {
+    const url = "https://fr.openfisca.org/api/latest/parameters"
+    const res = await fetch(url)
 
-		if (res.ok) {
-			return {
-				props: {
-					parameterById: await res.json()
-				}
-			};
-		}
-
-		return {
-			status: res.status,
-			error: new Error(`Could not load ${url}`)
-		};
-	}
+    if (!res.ok) {
+      return {
+        status: res.status,
+        error: new Error(`Could not load ${url}`),
+      }
+    }
+    const parameterById = await res.json()
+    return {
+      props: {
+        parameterById: await res.json(),
+      },
+    }
+  }
 </script>
 
 <script lang="ts">

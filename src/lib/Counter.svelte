@@ -1,10 +1,12 @@
 <script lang="ts">
-  let count: number = 0;
+  let count: number = 0
 
   const increment = () => {
-    count += 1;
-  };
+    count += 1
+  }
 </script>
+
+<button on:click={increment}> Clicks: {count} </button>
 
 <style lang="postcss">
   button {
@@ -30,5 +32,3 @@
     @apply bg-red-500 bg-opacity-20;
   }
 </style>
-
-<button on:click={increment}> Clicks: {count} </button>

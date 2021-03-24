@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   export async function load({ page, fetch, session, context }) {
-    const url = "https://fr.openfisca.org/api/latest/calculate";
+    const url = "https://fr.openfisca.org/api/latest/calculate"
     const situation = {
       individus: {
         Claude: {
@@ -40,32 +40,32 @@
           personnes_a_charge: ["Camille"],
         },
       },
-    };
+    }
     const res = await fetch(url, {
       body: JSON.stringify(situation, null, 2),
       headers: {
         "Content-Type": "application/json",
       },
       method: "POST",
-    });
+    })
 
     if (res.ok) {
       return {
         props: {
           simulation: await res.json(),
         },
-      };
+      }
     }
 
     return {
       status: res.status,
       error: new Error(`Could not load ${url}`),
-    };
+    }
   }
 </script>
 
 <script lang="ts">
-  export let simulation: any;
+  export let simulation: any
 </script>
 
 <pre>{JSON.stringify(simulation, null, 2)}</pre>

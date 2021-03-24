@@ -2,7 +2,6 @@
   export async function load({ page, fetch, session, context }) {
     const url = "https://fr.openfisca.org/api/latest/parameters"
     const res = await fetch(url)
-
     if (!res.ok) {
       return {
         status: res.status,
@@ -12,7 +11,7 @@
     const parameterById = await res.json()
     return {
       props: {
-        parameterById: await res.json(),
+        parameterById,
       },
     }
   }

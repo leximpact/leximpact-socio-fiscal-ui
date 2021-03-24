@@ -3,6 +3,7 @@
 
   const menuItems = [
     { href: ".", label: "Accueil" },
+    { href: "about", label: "À propos" },
     { href: "calculations", label: "Calculs" },
     { href: "entities", label: "Entités" },
     { href: "parameters", label: "Paramètres" },
@@ -153,17 +154,17 @@
               aria-labelledby="user-menu"
             >
               <a
-                href="#"
+                href="profile"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem">Your Profile</a
               >
               <a
-                href="#"
+                href="settings"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem">Settings</a
               >
               <a
-                href="#"
+                href="sign_out"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem">Sign out</a
               >

@@ -42,13 +42,20 @@
 </style>
 
 <main>
-  <h1>Hello world!</h1>
+  <h1>Simulateur socio-fiscal Leximpact</h1>
 
   <Counter />
 
-  <p>
-    Visit
-    <a class="text-blue-600 underline" href="https://svelte.dev">svelte.dev</a>
-    to learn how to build Svelte apps.
-  </p>
+  <h2>Usage</h2>
+  <ul>
+    <li><a href="calculations">Calculations</a></li>
+    <li><a href="entities">Entities</a></li>
+    <li><a href="parameters">Parameters</a></li>
+    <li><a href="variables">Variables</a></li>
+  </ul>
+
+  <h2>Documentation</h2>
+  <ul>
+    <li><a href="spec">API documentation</a></li>
+  </ul>
 </main>

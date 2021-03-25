@@ -83,7 +83,7 @@
 
     if (!res.ok) {
       console.error(
-        `Erreur ${res.status} while POSTing ${url}\n${JSON.stringify(
+        `Error ${res.status} while calculating at ${url}\n${JSON.stringify(
           situation,
           null,
           2,

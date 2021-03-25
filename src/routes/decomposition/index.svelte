@@ -110,6 +110,18 @@
           famille_1: {
             parents: ["Claude", "Dominique"],
             enfants: ["Camille"],
+            rsa: {
+              "2021-01": null,
+              "2021-02": null
+            },
+            af: {
+              "2021-01": null,
+              "2021-02": null
+            },
+            cf: {
+              "2021-01": null,
+              "2021-02": null
+            },
           },
         },
         foyers_fiscaux: {

@@ -4,13 +4,43 @@
       const situation = {
         individus: {
           Claude: {
+            salaire_net_a_payer: {
+              "2021-01": null
+            },
+            salaire_imposable: {
+              "2021-01": null
+            },
+            cotisations_salariales: {
+              "2021-01": null
+            },
             salaire_de_base: {
-              "2017": 20000,
+              "2021-01": 20000/12,
+            },
+            cotisations_employeur: {
+              "2021-01": null
+            },
+            salaire_super_brut: {
+              "2021-01": null
             },
           },
           Dominique: {
+            salaire_net_a_payer: {
+              "2021-01": null
+            },
+            salaire_imposable: {
+              "2021-01": null
+            },
+            cotisations_salariales: {
+              "2021-01": null
+            },
             salaire_de_base: {
-              "2017": 30000,
+              "2021-01": 30000/12,
+            },
+            cotisations_employeur: {
+              "2021-01": null
+            },
+            salaire_super_brut: {
+              "2021-01": null
             },
           },
           Camille: {},
@@ -21,10 +51,10 @@
             conjoint: ["Dominique"],
             enfants: ["Camille"],
             revenu_disponible: {
-              "2017": null,
+              "2021": null
             },
             impots_directs: {
-              "2017": null,
+              "2021": null
             },
           },
         },
@@ -38,6 +68,9 @@
           foyer_fiscal_1: {
             declarants: ["Claude", "Dominique"],
             personnes_a_charge: ["Camille"],
+            irpp: {
+              "2021": null
+            },
           },
         },
       };

@@ -47,6 +47,9 @@
             salaire_super_brut: {
               "2021-01": null
             },
+            credit_impot_competitivite_emploi: {
+              "2021-01": null
+            },
           },
           Dominique: {
             salaire_net_a_payer: {
@@ -88,6 +91,9 @@
               "2021-01": null
             },
             salaire_super_brut: {
+              "2021-01": null
+            },
+            credit_impot_competitivite_emploi: {
               "2021-01": null
             },
           },

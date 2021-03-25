@@ -171,4 +171,3 @@
   </script>
   
   <pre>{JSON.stringify(simulation, null, 2)}</pre>
-  

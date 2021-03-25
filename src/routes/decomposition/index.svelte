@@ -91,13 +91,22 @@
               "2021-01": null
             },
           },
-          Camille: {},
+          Noa: {
+            age: {
+              "2021-01": 1
+            }
+          },
+          Camille: {
+            age: {
+              "2021-01": 15
+            }
+          },
         },
         menages: {
           menage_1: {
             personne_de_reference: ["Claude"],
             conjoint: ["Dominique"],
-            enfants: ["Camille"],
+            enfants: ["Camille", "Noa"],
             revenu_disponible: {
               "2021": null
             },
@@ -109,7 +118,7 @@
         familles: {
           famille_1: {
             parents: ["Claude", "Dominique"],
-            enfants: ["Camille"],
+            enfants: ["Camille", "Noa"],
             rsa: {
               "2021-01": null,
               "2021-02": null
@@ -127,7 +136,7 @@
         foyers_fiscaux: {
           foyer_fiscal_1: {
             declarants: ["Claude", "Dominique"],
-            personnes_a_charge: ["Camille"],
+            personnes_a_charge: ["Camille", "Noa"],
             irpp: {
               "2021": null
             },

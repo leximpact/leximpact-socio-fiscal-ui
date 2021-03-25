@@ -5,6 +5,7 @@
     { href: ".", label: "Accueil" },
     { href: "about", label: "À propos" },
     { href: "calculations", label: "Calculs" },
+    { href: "decomposition", label: "Décomposition" },
     { href: "entities", label: "Entités" },
     { href: "parameters", label: "Paramètres" },
     { href: "variables", label: "Variables" },

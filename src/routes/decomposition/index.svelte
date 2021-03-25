@@ -5,9 +5,19 @@
         individus: {
           Claude: {
             salaire_net_a_payer: {
+              // Salaire de la fiche de paie
+              "2021-01": null
+            },
+            crds_salaire: {
+              "2021-01": null
+            },
+            csg_imposable_salaire: {
               "2021-01": null
             },
             salaire_imposable: {
+              "2021-01": null
+            },
+            csg_deductible_salaire: {
               "2021-01": null
             },
             cotisations_salariales: {
@@ -19,6 +29,10 @@
             cotisations_employeur: {
               "2021-01": null
             },
+            allegement_fillon: {
+              // Allègement de cotisations patronales sur les bas salaires
+              "2021-01": null
+            }, 
             salaire_super_brut: {
               "2021-01": null
             },
@@ -27,7 +41,16 @@
             salaire_net_a_payer: {
               "2021-01": null
             },
+            crds_salaire: {
+              "2021-01": null
+            },
+            csg_imposable_salaire: {
+              "2021-01": null
+            },
             salaire_imposable: {
+              "2021-01": null
+            },
+            csg_deductible_salaire: {
               "2021-01": null
             },
             cotisations_salariales: {
@@ -37,6 +60,9 @@
               "2021-01": 30000/12,
             },
             cotisations_employeur: {
+              "2021-01": null
+            },
+            allegement_fillon: {
               "2021-01": null
             },
             salaire_super_brut: {

@@ -4,24 +4,35 @@
   export async function load({ fetch }: LoadInput): Promise<LoadOutput> {
     const url = "https://fr.openfisca.org/api/latest/variables"
     const res = await fetch(url)
-
-    if (res.ok) {
+    if (!res.ok) {
       return {
-        props: {
-          variableById: await res.json(),
-        },
+        status: res.status,
+        error: new Error(`Could not load ${url}`),
       }
     }
-
     return {
-      status: res.status,
-      error: new Error(`Could not load ${url}`),
+      props: {
+        variableById: await res.json(),
+      },
     }
   }
 </script>
 
 <script lang="ts">
-  export let variableById: unknown
+  import type { VariableSummaryById } from "$lib/variables"
+
+  export let variableById: VariableSummaryById
 </script>
 
-<pre>{JSON.stringify(variableById, null, 2)}</pre>
+<ul class="list-disc list-inside">
+  {#each Object.entries(variableById) as [id, variable]}
+    <li>
+      <a href="variables/{id}">
+        <var>{id}</var>
+        {#if variable.description !== null}
+          : {variable.description}
+        {/if}
+      </a>
+    </li>
+  {/each}
+</ul>

@@ -13,7 +13,6 @@
   $: retrieveParameter(node)
 
   async function retrieveParameter(node: ParametersNode): Promise<void> {
-    const url = "https://fr.openfisca.org/api/latest/parameters"
     const res = await fetch(node.href)
     if (!res.ok) {
       console.error(

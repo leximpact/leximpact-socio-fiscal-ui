@@ -3,6 +3,11 @@ dotenv.config()
 
 import { validateConfig } from "./auditors/config"
 
+export interface Config {
+  proxy: boolean
+  title: string
+}
+
 const config = {
   proxy: process.env.PROXY || false,
   title: process.env.TITLE || "Simulateur socio-fiscal",
@@ -20,4 +25,4 @@ if (error !== null) {
   process.exit(-1)
 }
 
-export default validConfig
+export default validConfig as Config

@@ -1,7 +1,9 @@
 <script context="module" lang="ts">
-  import type { ParametersNode, ParameterSummary } from "$lib/parameters"
+  import type { LoadInput, LoadOutput } from "@sveltejs/kit/types.internal"
 
-  export async function load({ page, fetch, session, context }) {
+  import type { ParametersNode } from "$lib/parameters"
+
+  export async function load({ fetch }: LoadInput): Promise<LoadOutput> {
     const url = "https://fr.openfisca.org/api/latest/parameters"
     const res = await fetch(url)
     if (!res.ok) {
@@ -18,7 +20,7 @@
       description: null,
       href: "",
     }
-    for (const [parameterId, parameter] of Object.entries(parameterById)) {
+    for (const parameterId of Object.keys(parameterById)) {
       const idSegments: string[] = []
       let node = parametersRootNode
       for (const idSegment of parameterId.split(".")) {

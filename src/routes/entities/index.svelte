@@ -1,5 +1,7 @@
 <script context="module" lang="ts">
-  export async function load({ page, fetch, session, context }) {
+  import type { LoadInput, LoadOutput } from "@sveltejs/kit/types.internal"
+
+  export async function load({ fetch }: LoadInput): Promise<LoadOutput> {
     const url = "https://fr.openfisca.org/api/latest/entities"
     const res = await fetch(url)
 
@@ -19,7 +21,7 @@
 </script>
 
 <script lang="ts">
-  export let entityById: any
+  export let entityById: unknown
 </script>
 
 <pre>{JSON.stringify(entityById, null, 2)}</pre>

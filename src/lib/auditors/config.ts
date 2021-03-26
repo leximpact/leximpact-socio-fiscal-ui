@@ -9,7 +9,7 @@ import {
   cleanAudit,
 } from "@auditors/core"
 
-export function auditConfig(audit: Audit, data: any): [any, any] {
+export function auditConfig(audit: Audit, data: unknown): [unknown, unknown] {
   if (data == null) {
     return [data, null]
   }
@@ -18,7 +18,7 @@ export function auditConfig(audit: Audit, data: any): [any, any] {
   }
 
   data = { ...data }
-  const errors: { [key: string]: any } = {}
+  const errors: { [key: string]: unknown } = {}
   const remainingKeys = new Set(Object.keys(data))
 
   audit.attribute(
@@ -43,6 +43,6 @@ export function auditConfig(audit: Audit, data: any): [any, any] {
   return audit.reduceRemaining(data, errors, remainingKeys)
 }
 
-export function validateConfig(data: any): [any, any] {
+export function validateConfig(data: unknown): [unknown, unknown] {
   return auditConfig(cleanAudit, data)
 }

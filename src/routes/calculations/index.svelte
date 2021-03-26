@@ -1,5 +1,8 @@
 <script context="module" lang="ts">
-  import { decomposition, walkDecomposition } from "$lib/decomposition"
+  import type { LoadInput, LoadOutput } from "@sveltejs/kit/types.internal"
+
+  import { decomposition, walkDecomposition } from "$lib/decompositions"
+  import type { Situation } from "$lib/situations"
 
   // See https://github.com/cbenz/openfisca-interactive/blob/master/waterfall.ipynb
   const year = 2017
@@ -35,7 +38,7 @@
       )
       .map((node) => [node.code, { [year]: null }]),
   )
-  const situation = {
+  const situation: Situation = {
     individus: {
       Claude: {
         salaire_de_base: {
@@ -71,7 +74,7 @@
     },
   }
 
-  export async function load({ page, fetch, session, context }) {
+  export async function load({ fetch }: LoadInput): Promise<LoadOutput> {
     const url = "https://fr.openfisca.org/api/latest/calculate"
     const res = await fetch(url, {
       body: JSON.stringify(situation, null, 2),
@@ -103,7 +106,9 @@
 </script>
 
 <script lang="ts">
-  export let simulation: any
+  import type { Simulation } from "$lib/simulations"
+
+  export let simulation: Simulation
 </script>
 
 <pre>{JSON.stringify(simulation, null, 2)}</pre>

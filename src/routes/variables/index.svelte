@@ -24,6 +24,7 @@
   export let variableById: VariableSummaryById
 </script>
 
+<h1>Variables</h1>
 <ul class="list-disc list-inside">
   {#each Object.entries(variableById) as [id, variable]}
     <li>

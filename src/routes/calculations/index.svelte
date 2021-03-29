@@ -106,9 +106,45 @@
 </script>
 
 <script lang="ts">
+  import Sockette from "sockette"
+
+  import { browser } from "$app/env"
+  import { session } from "$app/stores"
   import type { Simulation } from "$lib/simulations"
 
   export let simulation: Simulation
+
+  let webSocket: Sockette | undefined = undefined
+
+  $: if (browser) {
+    openWebSocket()
+  }
+
+  function openWebSocket() {
+    webSocket = new Sockette(
+      new URL("ws", $session.apiWebSocketBaseUrl).toString(),
+      {
+        // maxAttempts: 10,
+        onmessage: (event) => {
+          console.log("WebSocket message received:", event)
+        },
+        // onopen: (event) => console.log("[WebSocket] Connected!", event),
+        // onreconnect: (event) =>
+        //   console.log("[WebSocket] Reconnecting...", event),
+        // onmaximum: (event) =>
+        //   console.log("[WebSocket] Stop Attempting!", event),
+        // onclose: (event) => console.log("[WebSocket] Closed!", event),
+        // onerror: (event) => console.log("[WebSocket] Error:", event),
+        // timeout: 5e3,
+      },
+    )
+  }
+
+  function submit() {
+    webSocket.send("Kilroy was here!")
+  }
 </script>
+
+<button on:click={submit}>Click me</button>
 
 <pre>{JSON.stringify(simulation, null, 2)}</pre>

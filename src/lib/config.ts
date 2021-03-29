@@ -4,16 +4,17 @@ dotenv.config()
 import { validateConfig } from "./auditors/config"
 
 export interface Config {
+  apiBaseUrl: string
+  apiWebSocketBaseUrl: string
   proxy: boolean
   title: string
 }
 
-const config = {
+const [validConfig, error] = validateConfig({
+  apiBaseUrl: process.env.API_BASE_URL || "http://localhost:8000/",
   proxy: process.env.PROXY || false,
   title: process.env.TITLE || "Simulateur socio-fiscal",
-}
-
-const [validConfig, error] = validateConfig(config)
+})
 if (error !== null) {
   console.error(
     `Error in configuration:\n${JSON.stringify(
@@ -24,5 +25,7 @@ if (error !== null) {
   )
   process.exit(-1)
 }
+const config = validConfig as Config
+config.apiWebSocketBaseUrl = config.apiBaseUrl.replace(/^http/, "ws")
 
-export default validConfig as Config
+export default config

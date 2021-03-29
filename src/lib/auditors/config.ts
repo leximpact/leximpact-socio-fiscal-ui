@@ -1,6 +1,7 @@
 import {
   Audit,
   auditBoolean,
+  auditHttpUrl,
   auditRequire,
   auditSetNullish,
   auditStringToBoolean,
@@ -21,6 +22,15 @@ export function auditConfig(audit: Audit, data: unknown): [unknown, unknown] {
   const errors: { [key: string]: unknown } = {}
   const remainingKeys = new Set(Object.keys(data))
 
+  audit.attribute(
+    data,
+    "apiBaseUrl",
+    true,
+    errors,
+    remainingKeys,
+    auditHttpUrl,
+    auditRequire,
+  )
   audit.attribute(
     data,
     "proxy",

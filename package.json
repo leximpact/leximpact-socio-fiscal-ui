@@ -4,7 +4,7 @@
   "scripts": {
     "build": "svelte-kit build",
     "dev": "svelte-kit dev",
-    "lint": "prettier --check . && eslint .",
+    "lint": "prettier --check . && eslint--ignore-path .gitignore .",
     "prettier": "prettier --plugin-search-dir=. --write \"*.cjs\" --write \"src/*.ts\" \"src/**/*.ts\" \"src/**/*.svelte\"",
     "start": "svelte-kit start"
   },

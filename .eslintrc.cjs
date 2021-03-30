@@ -5,18 +5,18 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "prettier",
   ],
-  ignorePatterns: [
-    ".eslintrc.cjs",
-    "build/**",
-    "postcss.config.cjs",
-    "prettier.config.cjs",
-  ],
+  ignorePatterns: ["*.cjs", "build/**"],
   overrides: [{ files: ["*.svelte"], processor: "svelte3/svelte3" }],
   parser: "@typescript-eslint/parser",
   plugins: ["svelte3", "@typescript-eslint"],
   parserOptions: {
     sourceType: "module",
     ecmaVersion: 2018,
+  },
+  env: {
+    browser: true,
+    es2017: true,
+    node: true,
   },
   root: true,
   settings: {

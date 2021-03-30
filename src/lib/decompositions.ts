@@ -1,7 +1,8 @@
-interface Decomposition {
+export interface Decomposition {
   code: string
   short_name: string
   children?: Decomposition[]
+  value?: number
 }
 
 export const decomposition: Decomposition = {

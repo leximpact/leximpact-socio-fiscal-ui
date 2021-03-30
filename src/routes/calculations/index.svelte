@@ -110,13 +110,19 @@
 
   import { browser } from "$app/env"
   import { session } from "$app/stores"
-  import { decomposition } from "$lib/decompositions"
+  import type { Decomposition } from "$lib/decompositions"
+  import { decomposition as decompositionWithoutValue } from "$lib/decompositions"
   // import type { Simulation } from "$lib/simulations"
   import type { Situation } from "$lib/situations"
+  import Waterfall from "$lib/Waterfall"
 
   // export let simulation: Simulation
 
-  let results: { code: string; value: number[] }[] = []
+  let valueByCode: { [code: string]: number } = {}
+  let decomposition = updateDecompositionValues(
+    decompositionWithoutValue as Decomposition,
+    valueByCode,
+  )
   const year = 2017
   const situation: Situation = {
     individus: {
@@ -165,12 +171,21 @@
       {
         // maxAttempts: 10,
         onmessage: (event) => {
-          console.log("WebSocket message received:", event)
           const result = JSON.parse(event.data)
           if (result.error !== undefined) {
             console.log("Error:", result)
           } else {
-            results = [...results, result]
+            valueByCode = {
+              ...valueByCode,
+              [result.code]: result.value.reduce((sum, cell) => {
+                sum += cell
+                return sum
+              }, 0),
+            }
+            decomposition = updateDecompositionValues(
+              decomposition,
+              valueByCode,
+            )
           }
         },
         // onopen: (event) => console.log("[WebSocket] Connected!", event),
@@ -186,7 +201,7 @@
   }
 
   function submit() {
-    results = []
+    valueByCode = {}
     webSocket.send(
       JSON.stringify({
         decomposition,
@@ -199,13 +214,43 @@
       }),
     )
   }
+
+  function updateDecompositionValues(
+    node: Decomposition,
+    valueByCode: { [code: string]: number },
+  ): Decomposition {
+    let value = valueByCode[node.code]
+    if (value === undefined) {
+      if (node.children === undefined) {
+        if (node.value !== 0) {
+          node = {
+            ...node,
+            value: 0,
+          }
+        }
+      } else {
+        const children = node.children.map((child) =>
+          updateDecompositionValues(child, valueByCode),
+        )
+        node = {
+          ...node,
+          children,
+          value: children.reduce((sum, child) => sum + child.value, 0),
+        }
+      }
+    } else if (node.value !== value) {
+      node = {
+        ...node,
+        value,
+      }
+    }
+    return node
+  }
 </script>
 
 <pre>{JSON.stringify(situation)}</pre>
 
 <button on:click={submit}>Simuler</button>
 
-{#each results as result}
-  <pre>{JSON.stringify(result)}</pre>
-{/each}
+<Waterfall {decomposition} />
 <!-- <pre>{JSON.stringify(simulation, null, 2)}</pre> -->

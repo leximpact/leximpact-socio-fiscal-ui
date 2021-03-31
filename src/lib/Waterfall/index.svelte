@@ -36,7 +36,7 @@
 </script>
 
 {#if xDomain.length > 0}
-  <div class="h-64 w-full">
+  <div class="h-64 max-w-2xl mx-auto">
     <LayerCake
       {data}
       x="short_name"
@@ -48,7 +48,7 @@
       <Svg>
         <Column />
         <AxisX gridlines={false} />
-        <AxisY />
+        <AxisY textAnchor="end" />
       </Svg>
     </LayerCake>
   </div>

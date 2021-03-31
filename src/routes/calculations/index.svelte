@@ -189,6 +189,7 @@
           }
         },
         // onopen: (event) => console.log("[WebSocket] Connected!", event),
+        onopen: () => submit(),
         // onreconnect: (event) =>
         //   console.log("[WebSocket] Reconnecting...", event),
         // onmaximum: (event) =>

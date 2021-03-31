@@ -118,10 +118,10 @@
 
   // export let simulation: Simulation
 
-  let valueByCode: { [code: string]: number } = {}
+  let deltaByCode: { [code: string]: number } = {}
   let decomposition = updateDecompositionValues(
     decompositionWithoutValue as Decomposition,
-    valueByCode,
+    deltaByCode,
   )
   const year = 2017
   const situation: Situation = {
@@ -173,18 +173,18 @@
         onmessage: (event) => {
           const result = JSON.parse(event.data)
           if (result.error !== undefined) {
-            console.log("Error:", result)
+            console.error("Error:", result)
           } else {
-            valueByCode = {
-              ...valueByCode,
+            deltaByCode = {
+              ...deltaByCode,
               [result.code]: result.value.reduce((sum, cell) => {
                 sum += cell
                 return sum
               }, 0),
             }
             decomposition = updateDecompositionValues(
-              decomposition,
-              valueByCode,
+              decompositionWithoutValue,
+              deltaByCode,
             )
           }
         },
@@ -201,7 +201,7 @@
   }
 
   function submit() {
-    valueByCode = {}
+    deltaByCode = {}
     webSocket.send(
       JSON.stringify({
         decomposition,
@@ -217,34 +217,37 @@
 
   function updateDecompositionValues(
     node: Decomposition,
-    valueByCode: { [code: string]: number },
+    deltaByCode: { [code: string]: number },
+    valuePrevious = 0,
   ): Decomposition {
-    let value = valueByCode[node.code]
-    if (value === undefined) {
-      if (node.children === undefined) {
-        if (node.value !== 0) {
-          node = {
-            ...node,
-            value: 0,
-          }
-        }
-      } else {
-        const children = node.children.map((child) =>
-          updateDecompositionValues(child, valueByCode),
+    let children = node.children
+    if (children !== undefined) {
+      children = []
+      let childValuePrevious = valuePrevious
+      for (let child of node.children) {
+        child = updateDecompositionValues(
+          child,
+          deltaByCode,
+          childValuePrevious,
         )
-        node = {
-          ...node,
-          children,
-          value: children.reduce((sum, child) => sum + child.value, 0),
-        }
-      }
-    } else if (node.value !== value) {
-      node = {
-        ...node,
-        value,
+        children.push(child)
+        childValuePrevious = child.values[1]
       }
     }
-    return node
+    let delta = deltaByCode[node.code]
+    if (delta === undefined) {
+      if (children === undefined) {
+        delta = 0
+      } else {
+        delta = children[children.length - 1].values[1] - children[0].values[0]
+      }
+    }
+    return {
+      ...node,
+      children,
+      delta,
+      values: [valuePrevious, valuePrevious + delta],
+    }
   }
 </script>
 

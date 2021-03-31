@@ -1,35 +1,54 @@
-<script>
+<script lang="ts">
   import { getContext } from "svelte"
-
-  const { data, xGet, yGet, yRange, xScale } = getContext("LayerCake")
-
-  $: columnWidth = (d) => {
-    const vals = $xGet(d)
-    return Math.max(0, vals[1] - vals[0])
-  }
-
-  $: columnHeight = (d) => {
-    return $yRange[0] - $yGet(d)
-  }
 
   /* --------------------------------------------
    * Default styles
    */
-  export let fill = "#00e047"
-  export let stroke = ""
-  export let strokeWidth = 0
+  export let blue = "blue"
+  export let green = "green"
+  export let red = "red"
+  export let stroke = "black"
+  export let strokeWidth = 0.1
+
+  const { data, xGet, xScale, yGet } = getContext("LayerCake")
+
+  function* iterColumns(nodes, xGet, xScale, yGet) {
+    for (const node of nodes) {
+      const xVals = xGet(node)
+      const x = xScale.bandwidth ? xVals : xVals[0]
+      const width = xScale.bandwidth
+        ? xScale.bandwidth()
+        : Math.max(0, xVals[1] - xVals[0])
+      const [y0, y1] = yGet(node)
+      let height = y0 - y1
+      let y = y1
+      if (height < 0) {
+        height = -height
+        y = y0
+      }
+      yield {
+        fill: node.children === undefined ? (y0 < y1 ? red : green) : blue,
+        fillOpacity: node.children === undefined ? 1 : 0.25,
+        height,
+        width,
+        x,
+        y,
+      }
+    }
+  }
 </script>
 
 <g class="column-group">
-  {#each $data as d, i}
+  {#each [...iterColumns($data, $xGet, $xScale, $yGet)] as { fill, fillOpacity, height, width, x, y }, i}
     <rect
       class="group-rect"
       data-id={i}
-      x={$xScale.bandwidth ? $xGet(d) : $xGet(d)[0]}
-      y={$yGet(d)}
-      width={$xScale.bandwidth ? $xScale.bandwidth() : columnWidth(d)}
-      height={columnHeight(d)}
       {fill}
+      fill-opacity={fillOpacity}
+      {height}
+      {width}
+      {x}
+      {y}
       {stroke}
       stroke-width={strokeWidth}
     />

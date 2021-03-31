@@ -10,25 +10,46 @@
 
   export let decomposition: Decomposition
 
-  $: data = [...walkDecomposition(decomposition)].filter(
-    ({ value }) => value !== 0,
-  )
+  $: data = [...walkDecomposition(decomposition, true)]
+
+  $: xDomain = data
+    .filter(({ delta }) => delta !== 0)
+    .map((node) => node.short_name)
+
+  $: yDomain = computeYDomain(data)
+
+  function computeYDomain(data): [number, number] {
+    let valueMin = undefined
+    let valueMax = undefined
+    for (const node of data) {
+      for (const value of node.values) {
+        if (valueMin === undefined || value < valueMin) {
+          valueMin = value
+        }
+        if (valueMax === undefined || value > valueMax) {
+          valueMax = value
+        }
+      }
+    }
+    return [valueMin, valueMax]
+  }
 </script>
 
-<div class="h-64 w-full">
-  <LayerCake
-    {data}
-    x="short_name"
-    xScale={scaleBand().paddingInner([0.02]).round(true)}
-    xDomain={[...walkDecomposition(decomposition)]
-      .filter(({ value }) => value !== 0)
-      .map((node) => node.short_name)}
-    y="value"
-  >
-    <Svg>
-      <Column />
-      <AxisX />
-      <AxisY />
-    </Svg>
-  </LayerCake>
-</div>
+{#if xDomain.length > 0}
+  <div class="h-64 w-full">
+    <LayerCake
+      {data}
+      x="short_name"
+      xScale={scaleBand().paddingInner([0.02]).round(true)}
+      {xDomain}
+      y={(node) => [node.values[0], node.values[1]]}
+      {yDomain}
+    >
+      <Svg>
+        <Column />
+        <AxisX gridlines={false} />
+        <AxisY />
+      </Svg>
+    </LayerCake>
+  </div>
+{/if}

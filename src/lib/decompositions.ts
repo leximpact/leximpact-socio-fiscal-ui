@@ -1,8 +1,9 @@
 export interface Decomposition {
-  code: string
-  short_name: string
   children?: Decomposition[]
-  value?: number
+  code: string
+  delta?: number
+  short_name: string
+  values?: [number, number]
 }
 
 export const decomposition: Decomposition = {
@@ -27,7 +28,7 @@ export const decomposition: Decomposition = {
                   children: [
                     {
                       code: "salaire_super_brut_hors_allegements",
-                      short_name: "Salaire super brut HA",
+                      short_name: "Salaire super brut hors allègements",
                       children: [
                         {
                           code: "salaire_super_brut",
@@ -102,9 +103,15 @@ export const decomposition: Decomposition = {
 
 export function* walkDecomposition(
   decomposition: Decomposition,
+  depthFirst = false,
 ): Generator<Decomposition, void, unknown> {
-  yield decomposition
+  if (!depthFirst) {
+    yield decomposition
+  }
   for (const child of decomposition.children ?? []) {
-    yield* walkDecomposition(child)
+    yield* walkDecomposition(child, depthFirst)
+  }
+  if (depthFirst) {
+    yield decomposition
   }
 }

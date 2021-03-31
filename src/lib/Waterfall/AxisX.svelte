@@ -10,7 +10,7 @@
   export let snapTicks = false
   export let ticks = undefined
   export let xTick = undefined
-  export let yTick = 16
+  export let yTick = 0
   export let dxTick = 0
   export let dyTick = 0
 
@@ -23,18 +23,6 @@
     : typeof ticks === "function"
     ? ticks($xScale.ticks())
     : $xScale.ticks(ticks)
-
-  function textAnchor(i) {
-    if (snapTicks === true) {
-      if (i === 0) {
-        return "start"
-      }
-      if (i === tickVals.length - 1) {
-        return "end"
-      }
-    }
-    return "middle"
-  }
 </script>
 
 <g class="axis x-axis" class:snapTicks>
@@ -56,11 +44,12 @@
         />
       {/if}
       <text
+        class="transform rotate-45"
         x={xTick || isBandwidth ? $xScale.bandwidth() / 2 : 0}
         y={yTick}
         dx={dxTick}
         dy={dyTick}
-        text-anchor={textAnchor(i)}>{formatTick(tick)}</text
+        text-anchor="start">{formatTick(tick)}</text
       >
     </g>
   {/each}

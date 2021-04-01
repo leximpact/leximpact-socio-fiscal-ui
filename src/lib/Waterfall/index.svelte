@@ -9,11 +9,12 @@
   import Column from "./Column.svelte"
 
   export let decomposition: Decomposition
+  export let showNulls: boolean
 
   $: data = [...walkDecomposition(decomposition, true)]
 
   $: xDomain = data
-    .filter(({ delta }) => delta !== 0)
+    .filter(({ delta }) => showNulls || delta !== 0)
     .map((node) => node.short_name)
 
   $: yDomain = computeYDomain(data)
@@ -36,7 +37,7 @@
 </script>
 
 {#if xDomain.length > 0}
-  <div class="h-64 max-w-2xl mx-auto">
+  <div class="h-64 w-full mx-auto">
     <LayerCake
       {data}
       x="short_name"

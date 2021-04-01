@@ -5,6 +5,7 @@
   import { session } from "$app/stores"
   import type { Decomposition } from "$lib/decompositions"
   import { decomposition as decompositionWithoutValue } from "$lib/decompositions"
+  import DecompositionTree from "$lib/DecompositionTree.svelte"
   import type { Situation } from "$lib/situations"
   import TestCaseEdit from "$lib/TestCaseEdit.svelte"
   import Waterfall from "$lib/Waterfall"
@@ -14,6 +15,7 @@
     decompositionWithoutValue as Decomposition,
     deltaByCode,
   )
+  let showNulls = false
   let situation: Situation | undefined = undefined
   let webSocket: Sockette | undefined = undefined
   let webSocketOpen = false
@@ -137,5 +139,14 @@
   <button on:click={submit}>Simuler</button>
 </div>
 
-<Waterfall {decomposition} />
-<!-- <pre>{JSON.stringify(simulation, null, 2)}</pre> -->
+<div class="flex">
+  <div>
+    <DecompositionTree {decomposition} {showNulls} />
+  </div>
+
+  <Waterfall {decomposition} {showNulls} />
+</div>
+
+<label
+  ><input bind:checked={showNulls} type="checkbox" /> Montrer les montants nuls</label
+>

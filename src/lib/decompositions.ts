@@ -1,9 +1,9 @@
 export interface Decomposition {
   children?: Decomposition[]
   code: string
-  delta?: number
+  delta?: number[]
   short_name: string
-  values?: [number, number]
+  values?: [number, number][]
 }
 
 export const decomposition: Decomposition = {

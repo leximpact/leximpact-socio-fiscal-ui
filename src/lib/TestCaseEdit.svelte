@@ -29,9 +29,9 @@
     }
   }
 
-  function changeEnfantVariable(index: number, key: "age", value: string) {
+  function changeEnfantVariable(index: number, name: "age", value: string) {
     enfants = [...enfants]
-    enfants[index] = { ...enfants[index], [key]: parseInt(value) }
+    enfants[index] = { ...enfants[index], [name]: parseInt(value) }
   }
 
   function changeIndividusCount(count: string): void {
@@ -49,15 +49,45 @@
 
   function changeIndividuVariable(
     index: number,
-    key: "salaire_de_base",
+    name: "salaire_de_base",
     value: string,
   ) {
     individus = [...individus]
-    individus[index] = { ...individus[index], [key]: parseInt(value) }
+    individus[index] = { ...individus[index], [name]: parseInt(value) }
   }
 
   function updateSituation(year, individus, enfants) {
+    // Remove variable when it is used in an axis.
+    delete individus[0].salaire_de_base
     const situation: Situation = {
+      axes: [
+        [
+          {
+            count: 100,
+            index: 0,
+            max: 100000,
+            min: 0,
+            name: "salaire_de_base",
+            period: year.toString(),
+          },
+        ],
+      ],
+      familles: {
+        "Famille 1": {
+          parents: individus.map((_individu, index) => `Individu ${index + 1}`),
+          enfants: enfants.map((enfants, index) => `Enfant ${index + 1}`),
+        },
+      },
+      foyers_fiscaux: {
+        "Foyer fiscal 1": {
+          declarants: individus.map(
+            (_individu, index) => `Individu ${index + 1}`,
+          ),
+          personnes_a_charge: enfants.map(
+            (enfants, index) => `Enfant ${index + 1}`,
+          ),
+        },
+      },
       individus: Object.fromEntries([
         ...individus.map((individu, index) => [
           `Individu ${index + 1}`,
@@ -79,22 +109,6 @@
             .slice(1)
             .map((_individu, index) => `Individu ${index + 2}`),
           enfants: enfants.map((enfants, index) => `Enfant ${index + 1}`),
-        },
-      },
-      familles: {
-        "Famille 1": {
-          parents: individus.map((_individu, index) => `Individu ${index + 1}`),
-          enfants: enfants.map((enfants, index) => `Enfant ${index + 1}`),
-        },
-      },
-      foyers_fiscaux: {
-        foyer_fiscal_1: {
-          declarants: individus.map(
-            (_individu, index) => `Individu ${index + 1}`,
-          ),
-          personnes_a_charge: enfants.map(
-            (enfants, index) => `Enfant ${index + 1}`,
-          ),
         },
       },
     }

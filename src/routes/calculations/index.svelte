@@ -10,11 +10,13 @@
   import TestCaseEdit from "$lib/TestCaseEdit.svelte"
   import Waterfall from "$lib/Waterfall"
 
-  let deltaByCode: { [code: string]: number } = {}
+  let count = 100 // TODO
+  let deltaByCode: { [code: string]: number[] } = {}
   let decomposition = updateDecompositionValues(
     decompositionWithoutValue as Decomposition,
     deltaByCode,
   )
+  let index = 0
   let showNulls = false
   let situation: Situation | undefined = undefined
   let webSocket: Sockette | undefined = undefined
@@ -44,10 +46,7 @@
           } else {
             deltaByCode = {
               ...deltaByCode,
-              [result.code]: result.value.reduce((sum, cell) => {
-                sum += cell
-                return sum
-              }, 0),
+              [result.code]: result.value,
             }
             decomposition = updateDecompositionValues(
               decompositionWithoutValue,
@@ -94,9 +93,12 @@
 
   function updateDecompositionValues(
     node: Decomposition,
-    deltaByCode: { [code: string]: number },
-    valuePrevious = 0,
+    deltaByCode: { [code: string]: number[] },
+    valuePrevious = undefined,
   ): Decomposition {
+    if (valuePrevious === undefined) {
+      valuePrevious = new Array(count).fill(0)
+    }
     let children = node.children
     if (children !== undefined) {
       children = []
@@ -108,22 +110,30 @@
           childValuePrevious,
         )
         children.push(child)
-        childValuePrevious = child.values[1]
+        childValuePrevious = child.values.map((itemValue) => itemValue[1])
       }
     }
     let delta = deltaByCode[node.code]
     if (delta === undefined) {
       if (children === undefined) {
-        delta = 0
+        delta = new Array(count).fill(0)
       } else {
-        delta = children[children.length - 1].values[1] - children[0].values[0]
+        const firstChildValues = children[0].values
+        const lastChildValues = children[children.length - 1].values
+        delta = lastChildValues.map(
+          (lastChildValue, index) =>
+            lastChildValue[1] - firstChildValues[index][0],
+        )
       }
     }
     return {
       ...node,
       children,
       delta,
-      values: [valuePrevious, valuePrevious + delta],
+      values: valuePrevious.map((previousItemValue, index) => [
+        previousItemValue,
+        previousItemValue + delta[index],
+      ]),
     }
   }
 </script>
@@ -138,15 +148,23 @@
 <div>
   <button on:click={submit}>Simuler</button>
 </div>
-
+{index}
 <div class="flex">
   <div>
-    <DecompositionTree {decomposition} {showNulls} />
+    <DecompositionTree {decomposition} {index} {showNulls} />
   </div>
 
-  <Waterfall {decomposition} {showNulls} />
+  <Waterfall {decomposition} {index} {showNulls} />
 </div>
 
 <label
   ><input bind:checked={showNulls} type="checkbox" /> Montrer les montants nuls</label
 >
+
+<input
+  max={count - 1}
+  min="0"
+  step="1"
+  type="range"
+  bind:value={index}
+/>{index}

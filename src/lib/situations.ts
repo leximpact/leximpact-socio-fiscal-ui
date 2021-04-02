@@ -1,3 +1,12 @@
+export interface Axis {
+  count: number
+  index?: number
+  max: number
+  min: number
+  name: string
+  period?: string
+}
+
 export interface EntitySituation {
   [key: string]: { [date: string]: number | null } | string[]
 }
@@ -21,6 +30,7 @@ export interface MenageSituation extends EntitySituation {
 }
 
 export interface Situation {
+  axes?: Axis[][]
   familles: { [name: string]: FamilleSituation }
   foyers_fiscaux: { [name: string]: FoyerFiscalSituation }
   individus: { [name: string]: IndividuSituation }

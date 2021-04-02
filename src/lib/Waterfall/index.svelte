@@ -9,22 +9,22 @@
   import Column from "./Column.svelte"
 
   export let decomposition: Decomposition
-  export let index: number
   export let showNulls: boolean
+  export let vectorIndex: number
 
   $: data = [...walkDecomposition(decomposition, true)]
 
   $: xDomain = data
-    .filter(({ delta }) => showNulls || delta[index] !== 0)
+    .filter(({ delta }) => showNulls || delta[vectorIndex] !== 0)
     .map((node) => node.short_name)
 
-  $: yDomain = computeYDomain(data, index)
+  $: yDomain = computeYDomain(data, vectorIndex)
 
-  function computeYDomain(data, index): [number, number] {
+  function computeYDomain(data, vectorIndex): [number, number] {
     let valueMin = undefined
     let valueMax = undefined
     for (const node of data) {
-      for (const value of node.values[index]) {
+      for (const value of node.values[vectorIndex]) {
         if (valueMin === undefined || value < valueMin) {
           valueMin = value
         }
@@ -44,7 +44,7 @@
       x="short_name"
       xScale={scaleBand().paddingInner([0.02]).round(true)}
       {xDomain}
-      y={(node) => [node.values[index][0], node.values[index][1]]}
+      y={(node) => [node.values[vectorIndex][0], node.values[vectorIndex][1]]}
       {yDomain}
     >
       <Svg>

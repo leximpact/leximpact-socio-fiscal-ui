@@ -12,6 +12,7 @@
     "@auditors/core": "^0.1.7",
     "@sveltejs/adapter-node": "next",
     "@sveltejs/kit": "next",
+    "@tailwindcss/forms": "^0.3.2",
     "@tailwindcss/jit": "^0.1.1",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",

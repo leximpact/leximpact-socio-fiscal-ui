@@ -2,20 +2,24 @@
   import { page, session } from "$app/stores"
 
   const menuItems = [
-    { href: ".", label: "Accueil" },
-    { href: "about", label: "À propos" },
-    { href: "calculations", label: "Calculs" },
-    { href: "decomposition", label: "Décomposition" },
-    { href: "entities", label: "Entités" },
-    { href: "parameters", label: "Paramètres" },
-    { href: "variables", label: "Variables" },
+    { href: "/", label: "Accueil" },
+    { href: "/about", label: "À propos" },
+    { href: "/calculations", label: "Calculs" },
+    { href: "/decomposition", label: "Décomposition" },
+    { href: "/entities", label: "Entités" },
+    { href: "/parameters", label: "Paramètres" },
+    { href: "/variables", label: "Variables" },
   ]
   let open = false
   let openUserMenu = false
 
-  $: segment = $page.path.split("/")[1] || "."
+  $: pageUrlPath = $page.path.replace(/\/+$/, "") || "/"
 
   $: title = $session.title
+
+  function activeMenuItem(href: string) {
+    return pageUrlPath === href || pageUrlPath.startsWith(href + "/")
+  }
 </script>
 
 <nav class="bg-gray-800">
@@ -88,7 +92,7 @@
             {#each menuItems as { label, href }}
               <a
                 aria-current="page"
-                class="{href === segment
+                class="{activeMenuItem(href)
                   ? 'bg-gray-900 text-white'
                   : 'text-gray-300 hover:bg-gray-700 hover:text-white'} px-3 py-2 rounded-md text-sm font-medium"
                 {href}>{label}</a
@@ -182,7 +186,7 @@
         {#each menuItems as { label, href }}
           <a
             aria-current="page"
-            class="{href === segment
+            class="{activeMenuItem(href)
               ? 'bg-gray-900 text-white'
               : 'text-gray-300 hover:bg-gray-700 hover:text-white'} block px-3 py-2 rounded-md text-base font-medium"
             {href}>{label}</a

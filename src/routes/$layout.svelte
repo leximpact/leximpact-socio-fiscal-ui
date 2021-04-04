@@ -1,6 +1,7 @@
 <script>
-  import NavBar from "$lib/NavBar.svelte"
   import "../global.css"
+
+  import NavBar from "$lib/NavBar.svelte"
 </script>
 
 <NavBar />

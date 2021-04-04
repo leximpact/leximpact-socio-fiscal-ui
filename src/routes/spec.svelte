@@ -21,7 +21,17 @@
 </script>
 
 <script lang="ts">
+  import { session } from "$app/stores"
+
   export let spec: unknown
 </script>
 
-<pre>{JSON.stringify(spec, null, 2)}</pre>
+<svelte:head>
+  <title>Documentation de l'API | {$session.title}</title>
+</svelte:head>
+
+<main>
+  <h1>Documentation de l'API</h1>
+
+  <pre>{JSON.stringify(spec, null, 2)}</pre>
+</main>

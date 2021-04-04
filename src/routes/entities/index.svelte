@@ -21,7 +21,17 @@
 </script>
 
 <script lang="ts">
+  import { session } from "$app/stores"
+
   export let entityById: unknown
 </script>
 
-<pre>{JSON.stringify(entityById, null, 2)}</pre>
+<svelte:head>
+  <title>Entités | {$session.title}</title>
+</svelte:head>
+
+<main>
+  <h1>Entités</h1>
+
+  <pre>{JSON.stringify(entityById, null, 2)}</pre>
+</main>

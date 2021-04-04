@@ -1,5 +1,15 @@
+<script lang="ts">
+  import { session } from "$app/stores"
+
+  $: title = $session.title
+</script>
+
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
+
 <main>
-  <h1>Simulateur socio-fiscal Leximpact</h1>
+  <h1>{title}</h1>
 
   <h2>Tests de l'API OpenFisca</h2>
   <ul>

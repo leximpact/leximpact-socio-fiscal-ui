@@ -19,21 +19,29 @@
 </script>
 
 <script lang="ts">
+  import { session } from "$app/stores"
   import type { VariableSummaryById } from "$lib/variables"
 
   export let variableById: VariableSummaryById
 </script>
 
-<h1>Variables</h1>
-<ul class="list-disc list-inside">
-  {#each Object.entries(variableById) as [id, variable]}
-    <li>
-      <a href="variables/{id}">
-        <var>{id}</var>
-        {#if variable.description !== null}
-          : {variable.description}
-        {/if}
-      </a>
-    </li>
-  {/each}
-</ul>
+<svelte:head>
+  <title>Variables | {$session.title}</title>
+</svelte:head>
+
+<main>
+  <h1>Variables</h1>
+
+  <ul class="list-disc list-inside">
+    {#each Object.entries(variableById) as [id, variable]}
+      <li>
+        <a href="variables/{id}">
+          <var>{id}</var>
+          {#if variable.description !== null}
+            : {variable.description}
+          {/if}
+        </a>
+      </li>
+    {/each}
+  </ul>
+</main>

@@ -49,9 +49,18 @@
 </script>
 
 <script lang="ts">
+  import { session } from "$app/stores"
   import ParametersTree from "$lib/ParametersTree.svelte"
 
   export let parametersTree: { [id: string]: ParametersNode }
 </script>
 
-<ParametersTree tree={parametersTree} />
+<svelte:head>
+  <title>Paramètres | {$session.title}</title>
+</svelte:head>
+
+<main>
+  <h1>Paramètres</h1>
+
+  <ParametersTree tree={parametersTree} />
+</main>

@@ -177,9 +177,18 @@
 </script>
 
 <script lang="ts">
+  import { session } from "$app/stores"
   import type { Simulation } from "$lib/simulations"
 
   export let simulation: Simulation
 </script>
 
-<pre>{JSON.stringify(simulation, null, 2)}</pre>
+<svelte:head>
+  <title>Décomposition | {$session.title}</title>
+</svelte:head>
+
+<main>
+  <h1>Décomposition</h1>
+
+  <pre>{JSON.stringify(simulation, null, 2)}</pre>
+</main>

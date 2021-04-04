@@ -227,30 +227,36 @@
   }
 </script>
 
-<label class="block">
-  Année
-  <input max={2021} min={2013} step="1" type="number" bind:value={year} />
-</label>
+<svelte:head>
+  <title>Calculs | {$session.title}</title>
+</svelte:head>
 
-<TestCaseEdit
-  bind:vectorIndex
-  on:changeAxes={changeAxes}
-  on:changeSituation={changeSituation}
-  {year}
-/>
+<main>
+  <label class="block">
+    Année
+    <input max={2021} min={2013} step="1" type="number" bind:value={year} />
+  </label>
 
-<div>
-  <button on:click={submit}>Simuler</button>
-</div>
+  <TestCaseEdit
+    bind:vectorIndex
+    on:changeAxes={changeAxes}
+    on:changeSituation={changeSituation}
+    {year}
+  />
 
-<div class="flex">
   <div>
-    <DecompositionTree {decomposition} {showNulls} {vectorIndex} />
+    <button on:click={submit}>Simuler</button>
   </div>
 
-  <Waterfall {decomposition} {showNulls} {vectorIndex} />
-</div>
+  <div class="flex">
+    <div>
+      <DecompositionTree {decomposition} {showNulls} {vectorIndex} />
+    </div>
 
-<label
-  ><input bind:checked={showNulls} type="checkbox" /> Montrer les montants nuls</label
->
+    <Waterfall {decomposition} {showNulls} {vectorIndex} />
+  </div>
+
+  <label
+    ><input bind:checked={showNulls} type="checkbox" /> Montrer les montants nuls</label
+  >
+</main>

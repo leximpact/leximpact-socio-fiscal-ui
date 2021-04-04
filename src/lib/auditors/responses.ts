@@ -3,35 +3,32 @@ import { Audit, Auditor, laxAudit } from "@auditors/core"
 export function auditJsonResponse(auditor?: Auditor | null) {
   return async function (
     audit: Audit,
-    response: unknown,
+    responseUnknown: unknown,
   ): Promise<[unknown, unknown]> {
-    if (response == null) {
-      return [response, null]
+    if (responseUnknown == null) {
+      return [responseUnknown, null]
     }
-    if (typeof response !== "object") {
-      return audit.unexpectedType(response, "object")
+    if (typeof responseUnknown !== "object") {
+      return audit.unexpectedType(responseUnknown, "object")
     }
-    const validResponse = response as {
+    const response = responseUnknown as {
       ok: boolean
       json: () => Promise<{ error?: { details?: unknown } }>
       status: number
       statusText: string
       text: () => Promise<string>
     }
-    if (
-      !validResponse.ok &&
-      (validResponse.status < 400 || validResponse.status >= 404)
-    ) {
+    if (!response.ok && (response.status < 400 || response.status >= 404)) {
       return [
-        { response: await validResponse.text() },
-        `${validResponse.status} ${validResponse.statusText}`,
+        { response: await response.text() },
+        `${response.status} ${response.statusText}`,
       ]
     }
-    if (validResponse.status === 204) {
+    if (response.status === 204) {
       console.assert(auditor == null)
       return [null, null]
     }
-    const data = await validResponse.json()
+    const data = await response.json()
     if (data == null) {
       return [data, null]
     }

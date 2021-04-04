@@ -10,15 +10,18 @@ import {
   cleanAudit,
 } from "@auditors/core"
 
-export function auditConfig(audit: Audit, data: unknown): [unknown, unknown] {
-  if (data == null) {
-    return [data, null]
+export function auditConfig(
+  audit: Audit,
+  dataUnknown: unknown,
+): [unknown, unknown] {
+  if (dataUnknown == null) {
+    return [dataUnknown, null]
   }
-  if (typeof data !== "object") {
-    return audit.unexpectedType(data, "object")
+  if (typeof dataUnknown !== "object") {
+    return audit.unexpectedType(dataUnknown, "object")
   }
 
-  data = { ...data }
+  const data = { ...dataUnknown }
   const errors: { [key: string]: unknown } = {}
   const remainingKeys = new Set(Object.keys(data))
 

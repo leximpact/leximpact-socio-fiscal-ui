@@ -249,8 +249,13 @@
   </div>
 
   <div class="flex">
-    <div>
-      <DecompositionTree {decomposition} {showNulls} {vectorIndex} />
+    <div class="flex-shrink-0">
+      <DecompositionTree
+        {decomposition}
+        open={true}
+        {showNulls}
+        {vectorIndex}
+      />
     </div>
 
     <Waterfall {decomposition} {showNulls} {vectorIndex} />

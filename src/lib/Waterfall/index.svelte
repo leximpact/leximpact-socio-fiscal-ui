@@ -38,7 +38,7 @@
 </script>
 
 {#if xDomain.length > 0}
-  <div class="h-64 w-full mx-auto">
+  <div class="h-96 mx-auto pb-36 pl-12 pr-16 pt-4 w-full">
     <LayerCake
       {data}
       x="short_name"

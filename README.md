@@ -1,3 +1,13 @@
+# Interface socio-fiscale LexImpact
+
+Ceci est le code source de l'application `simulateur-socio-fiscal.leximpact.dev`.
+Il comprend une représentation graphique des effets de la loi sociale et fiscale sur des situations de personnes ainsi qu'une API Web permettant d'interroger le moteur de microsimulation socio-fiscale [OpenFisca-France](https://github.com/openfisca/openfisca-france).
+
+## Installation
+
+Ce dépôt requiert NodeJS. 
+Il est construit sur la base du framework Svelte (et Tailwind).
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);

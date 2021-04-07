@@ -22,5 +22,6 @@
   <h2>Documentation</h2>
   <ul>
     <li><a href="/spec">Documentation de l'API</a></li>
+    <li><a href="/storybook">Storybook (design des éléments visuels)</a></li>
   </ul>
 </main>

@@ -7,6 +7,7 @@
     { href: "/calculations", label: "Calculs" },
     { href: "/entities", label: "Entités" },
     { href: "/parameters", label: "Paramètres" },
+    { href: "/storybook", label: "Storybook" },
     { href: "/variables", label: "Variables" },
   ]
   let open = false

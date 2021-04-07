@@ -14,7 +14,6 @@
   <h2>Tests de l'API OpenFisca</h2>
   <ul>
     <li><a href="/calculations">Calculs</a></li>
-    <li><a href="/decomposition">Décomposition</a></li>
     <li><a href="/entities">Entités</a></li>
     <li><a href="/parameters">Paramètres</a></li>
     <li><a href="/variables">Variables</a></li>

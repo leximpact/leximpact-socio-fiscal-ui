@@ -1,52 +1,30 @@
 # Interface socio-fiscale LexImpact
 
 Ceci est le code source de l'application `simulateur-socio-fiscal.leximpact.dev`.
-Il comprend une représentation graphique des effets de la loi sociale et fiscale sur des situations de personnes ainsi qu'une API Web permettant d'interroger le moteur de microsimulation socio-fiscale [OpenFisca-France](https://github.com/openfisca/openfisca-france).
+Il comprend une représentation graphique des effets de la loi sociale et fiscale sur des situations de personnes.
 
 ## Installation
 
-Ce dépôt requiert NodeJS. 
-Il est construit sur la base du framework Svelte (et Tailwind).
+Ce dépôt requiert [NodeJS](https://nodejs.org/fr/) version 12 ou supérieure. 
+Il est construit sur la base du framework [Svelte](https://svelte.dev/) (et [Tailwind](https://tailwindcss.com/)).
+Il emploie l'API Web définie par [leximpact-socio-fiscal-api](https://github.com/leximpact/leximpact-socio-fiscal-api) pour faire appel au moteur de microsimulation socio-fiscale [OpenFisca-France](https://github.com/openfisca/openfisca-france) et calculer les effets de la loi.
 
-# create-svelte
+Afin de l'installer, ouvrir un terminal et exécuter les commandes suivantes pour vous déplacer dans le répertoire du projet et installer les librairies nécessaires :
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+```shell
+cd leximpact-socio-fiscal-ui/
+npm install
+``` 
 
-## Creating a project
+## Exécuter l'application - mode développeur
 
-If you're seeing this, you've probably already done this step. Congrats!
+Dans le répertoire de l'application `leximpact-socio-fiscal-ui`, exécuter la commande : 
 
-```bash
-# create a new project in the current directory
-npm init svelte@next
-
-# create a new project in my-app
-npm init svelte@next my-app
-```
-
-> Note: the `@next` is temporary
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+```shell
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+La commande n'affiche pas d'erreur et conserve la main tout en restant à l'écoute des modifications de code.
+L'application peut alors être consultée dans un navigateur à l'adresse indiquée (par défaut : `http://localhost:3000`) 
 
-Svelte apps are built with _adapters_, which optimise your project for deployment to different environments.
-
-By default, `npm run build` will generate a Node app that you can run with `node build`. To use a different adapter, add it to the `devDependencies` in `package.json` making sure to specify the version as `next` and update your `svelte.config.cjs` to [specify your chosen adapter](https://kit.svelte.dev/docs#configuration-adapter). The following official adapters are available:
-
-- [@sveltejs/adapter-node](https://github.com/sveltejs/kit/tree/master/packages/adapter-node)
-- [@sveltejs/adapter-static](https://github.com/sveltejs/kit/tree/master/packages/adapter-static)
-- [@sveltejs/adapter-netlify](https://github.com/sveltejs/kit/tree/master/packages/adapter-netlify)
-- [@sveltejs/adapter-vercel](https://github.com/sveltejs/kit/tree/master/packages/adapter-vercel)
-- ...more soon
-
-[See the adapter documentation for more detail](https://kit.svelte.dev/docs#adapters)
+Bravo ! Vous êtes prêt·e·s à utiliser et contribuer à `leximpact-socio-fiscal-ui` 🎉

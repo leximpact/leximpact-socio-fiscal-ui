@@ -148,13 +148,18 @@
 <div>
   <button on:click={submit}>Simuler</button>
 </div>
-{index}
+
 <div class="flex">
-  <div>
-    <DecompositionTree {decomposition} {index} {showNulls} />
+  <div class="flex-shrink-0">
+    <DecompositionTree
+      {decomposition}
+      open={true}
+      {showNulls}
+      vectorIndex={index}
+    />
   </div>
 
-  <Waterfall {decomposition} {index} {showNulls} />
+  <Waterfall {decomposition} {showNulls} {index} />
 </div>
 
 <label

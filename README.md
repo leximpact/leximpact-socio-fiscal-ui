@@ -1,6 +1,6 @@
 # Interface socio-fiscale LexImpact
 
-Ceci est le code source de l'application `https://simulateur-socio-fiscal.leximpact.dev`.  
+Ceci est le code source de l'application [simulateur-socio-fiscal.leximpact.dev](https://simulateur-socio-fiscal.leximpact.dev).  
 Il comprend une représentation graphique des effets de la loi sociale et fiscale sur des situations de personnes.
 
 ## Installation

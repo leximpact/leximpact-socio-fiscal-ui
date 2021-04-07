@@ -1,6 +1,8 @@
 const { tailwindExtractor } = require("tailwindcss/lib/lib/purgeUnusedStyles")
 
 module.exports = {
+  mode: "jit",
+  plugins: [require("@tailwindcss/forms")],
   purge: {
     content: ["./src/**/*.{html,js,svelte,ts}"],
     options: {
@@ -21,5 +23,4 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [require("@tailwindcss/forms")],
 }

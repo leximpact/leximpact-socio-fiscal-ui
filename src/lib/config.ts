@@ -11,9 +11,9 @@ export interface Config {
 }
 
 const [validConfig, error] = validateConfig({
-  apiBaseUrl: process.env.API_BASE_URL || "http://localhost:8000/",
-  proxy: process.env.PROXY || false,
-  title: process.env.TITLE || "Simulateur socio-fiscal",
+  apiBaseUrl: process.env["API_BASE_URL"],
+  proxy: process.env["PROXY"],
+  title: process.env["TITLE"],
 })
 if (error !== null) {
   console.error(

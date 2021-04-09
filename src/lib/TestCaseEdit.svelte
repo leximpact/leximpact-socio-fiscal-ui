@@ -3,6 +3,12 @@
 
   import type { Axis, Situation } from "$lib/situations"
 
+  interface AxisDescription {
+    code: string // code of variable used for axis
+    index: number // index of individu or index of enfant used for axis
+    isEnfant: boolean
+  }
+
   export let enfants = []
   export let individus = [
     {
@@ -12,15 +18,8 @@
   export let vectorIndex = 0
   export let year = 2021
 
-  let axes: Axis[][] = []
-  let axisIndexByVariableCodeByEnfantIndex = new Map<
-    number,
-    Map<string, number>
-  >()
-  let axisIndexByVariableCodeByIndividuIndex = new Map<
-    number,
-    Map<string, number>
-  >()
+  let axis: Axis | null = null
+  let axisDescription: AxisDescription | null = null
   const dispatch = createEventDispatcher()
   let inited = false
 
@@ -61,27 +60,6 @@
     }
   }
 
-  function changeIndividuVariableAxisIndex(
-    index: number,
-    code: "salaire_de_base",
-    value: string,
-  ) {
-    let axisIndexByVariableCode = axisIndexByVariableCodeByIndividuIndex.get(
-      index,
-    )
-    if (axisIndexByVariableCode === undefined) {
-      axisIndexByVariableCode = new Map()
-    } else {
-      axisIndexByVariableCode = new Map(axisIndexByVariableCode)
-    }
-    axisIndexByVariableCode.set(code, parseInt(value))
-    axisIndexByVariableCodeByIndividuIndex = new Map(
-      axisIndexByVariableCodeByIndividuIndex,
-    )
-    axisIndexByVariableCodeByIndividuIndex.set(index, axisIndexByVariableCode)
-    computeVectorIndex()
-  }
-
   function changeIndividuVariableValue(
     index: number,
     code: "salaire_de_base",
@@ -91,99 +69,52 @@
     individus[index] = { ...individus[index], [code]: parseInt(value) }
   }
 
-  function computeAxes() {
-    axes = []
-
-    for (const individuIndex of individus.keys()) {
-      const axisIndexByVariableCode = axisIndexByVariableCodeByIndividuIndex.get(
-        individuIndex,
-      )
-      if (axisIndexByVariableCode === undefined) {
-        continue
-      }
-      for (const code of axisIndexByVariableCode.keys()) {
-        axes.push([
-          {
+  function computeAxis() {
+    axis =
+      axisDescription === null
+        ? null
+        : {
             count: 100,
-            index: individuIndex,
+            index:
+              axisDescription.index +
+              (axisDescription.isEnfant ? individus.length : 0),
             max: 100000,
             min: 0,
-            name: code,
+            name: axisDescription.code,
             period: year.toString(),
-          },
-        ])
-      }
-    }
+          }
 
-    for (const enfantIndex of enfants.keys()) {
-      const axisIndexByVariableCode = axisIndexByVariableCodeByEnfantIndex.get(
-        enfantIndex,
-      )
-      if (axisIndexByVariableCode === undefined) {
-        continue
-      }
-      for (const code of axisIndexByVariableCode.keys()) {
-        axes.push([
-          {
-            count: 100,
-            index: individus.length + enfantIndex,
-            max: 100000,
-            min: 0,
-            name: code,
-            period: year.toString(),
-          },
-        ])
-      }
-    }
-
-    dispatch("changeAxes", axes)
+    dispatch("changeAxes", axis === null ? [] : [[axis]])
   }
 
-  function computeVectorIndex() {
-    let factor = 1
-    vectorIndex = 0
-    for (const parallelAxes of axes) {
-      const axis = parallelAxes[0]
-      const individuIndex = axis.index // TODO: handle non individus.
-      if (individuIndex < individus.length) {
-        vectorIndex +=
-          factor *
-          (axisIndexByVariableCodeByIndividuIndex
-            .get(individuIndex)
-            ?.get(axis.name) ?? 0)
-      } else {
-        const enfantIndex = individuIndex - individus.length
-        vectorIndex +=
-          factor *
-          (axisIndexByVariableCodeByEnfantIndex
-            .get(enfantIndex)
-            ?.get(axis.name) ?? 0)
-      }
-      factor *= axis.count
-    }
+  function isAxis(
+    axisDescription: AxisDescription | null,
+    isEnfant: boolean,
+    index: number,
+    code: string,
+  ): boolean {
+    return (
+      axisDescription !== null &&
+      axisDescription.isEnfant === isEnfant &&
+      axisDescription.index === index &&
+      axisDescription.code === code
+    )
   }
 
-  function toggleIndividuVariableAxis(index: number, code: "salaire_de_base") {
-    let axisIndexByVariableCode = axisIndexByVariableCodeByIndividuIndex.get(
-      index,
-    )
-    if (axisIndexByVariableCode === undefined) {
-      axisIndexByVariableCode = new Map()
+  function toggleAxis(isEnfant: boolean, index: number, code: string) {
+    if (isAxis(axisDescription, isEnfant, index, code)) {
+      axisDescription = null
+      vectorIndex = 0
     } else {
-      axisIndexByVariableCode = new Map(axisIndexByVariableCode)
+      axisDescription = {
+        code,
+        index,
+        isEnfant,
+      }
+      vectorIndex = 0 // TODO
     }
-    if (axisIndexByVariableCode.get(code) === undefined) {
-      axisIndexByVariableCode.set(code, 0)
-    } else {
-      axisIndexByVariableCode.delete(code)
-    }
-    axisIndexByVariableCodeByIndividuIndex = new Map(
-      axisIndexByVariableCodeByIndividuIndex,
-    )
-    axisIndexByVariableCodeByIndividuIndex.set(index, axisIndexByVariableCode)
 
-    computeAxes()
-    computeVectorIndex()
+    computeAxis()
   }
 
   function updateSituation(year, individus, enfants) {
@@ -256,17 +187,24 @@
     <li>
       <label>
         <input
-          checked={axisIndexByVariableCodeByIndividuIndex
-            .get(index)
-            ?.get("salaire_de_base") !== undefined}
-          on:click={() => toggleIndividuVariableAxis(index, "salaire_de_base")}
-          type="checkbox"
+          checked={isAxis(axisDescription, false, index, "salaire_de_base")}
+          on:click={() => toggleAxis(false, index, "salaire_de_base")}
+          type="radio"
         />
         Axe
       </label>
-      {#if axisIndexByVariableCodeByIndividuIndex
-        .get(index)
-        ?.get("salaire_de_base") === undefined}
+      {#if isAxis(axisDescription, false, index, "salaire_de_base")}
+        <label>
+          Salaire annuel de base
+          <input
+            max="99"
+            min="0"
+            step="1"
+            type="range"
+            bind:value={vectorIndex}
+          />
+        </label>
+      {:else}
         <label>
           Salaire annuel de base
           <input
@@ -280,25 +218,6 @@
             step="1"
             type="number"
             value={individu.salaire_de_base}
-          />
-        </label>
-      {:else}
-        <label>
-          Salaire annuel de base
-          <input
-            max="99"
-            min="0"
-            on:input={({ target }) =>
-              changeIndividuVariableAxisIndex(
-                index,
-                "salaire_de_base",
-                target.value,
-              )}
-            step="1"
-            type="range"
-            value={axisIndexByVariableCodeByIndividuIndex
-              .get(index)
-              ?.get("salaire_de_base") ?? 0}
           />
         </label>
       {/if}

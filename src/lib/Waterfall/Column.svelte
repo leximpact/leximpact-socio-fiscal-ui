@@ -21,6 +21,9 @@
         : Math.max(0, xVals[1] - xVals[0])
       const [y0, y1] = yGet(node)
       let height = y0 - y1
+      if (Number.isNaN(height)) {
+        continue
+      }
       let y = y1
       if (height < 0) {
         height = -height

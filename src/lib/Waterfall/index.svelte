@@ -37,14 +37,17 @@
   }
 </script>
 
-{#if xDomain.length > 0}
+{#if xDomain.length > 0 && yDomain.length > 0}
   <div class="h-96 mx-auto pb-36 pl-12 pr-16 pt-4 w-full">
     <LayerCake
       {data}
       x="short_name"
       xScale={scaleBand().paddingInner([0.02]).round(true)}
       {xDomain}
-      y={(node) => [node.values[vectorIndex][0], node.values[vectorIndex][1]]}
+      y={(node) => [
+        node.values[vectorIndex]?.[0] ?? 0,
+        node.values[vectorIndex]?.[1] ?? 0,
+      ]}
       {yDomain}
     >
       <Svg>

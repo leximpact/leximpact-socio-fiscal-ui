@@ -5,25 +5,55 @@
 
   interface AxisDescription {
     code: string // code of variable used for axis
-    index: number // index of individu or index of enfant used for axis
+    index: number // index of adulte or index of enfant used for axis
     isEnfant: boolean
   }
 
-  export let enfants = []
-  export let individus = [
+  export let adultes = [
     {
       salaire_de_base: 18655,
     },
   ]
+  export let enfants = []
   export let vectorIndex = 0
   export let year = 2021
 
   let axis: Axis | null = null
   let axisDescription: AxisDescription | null = null
   const dispatch = createEventDispatcher()
+  const adulteVariablesCode = ["salaire_de_base"]
+  const enfantVariablesCode = ["age"]
   let inited = false
+  let stepValue
+  const variableDefinitionByCode = {
+    age: {
+      allowSlider: true,
+      label: "Âge",
+      max: 150,
+      min: -1,
+    },
+    salaire_de_base: {
+      allowSlider: true,
+      label: "Salaire brut",
+      max: 100_000,
+      min: 0,
+    },
+  }
 
-  $: updateSituation(year, individus, enfants)
+  $: updateSituation(year, adultes, enfants)
+
+  function changeAdultesCount(count: string): void {
+    const adultesCount = parseInt(count)
+    if (adultesCount === adultes.length) {
+      return
+    }
+    adultes = adultes.slice(0, Math.min(adultes.length, adultesCount))
+    while (adultes.length < adultesCount) {
+      adultes.push({
+        salaire_de_base: 0,
+      })
+    }
+  }
 
   function changeEnfantsCount(count: string): void {
     const enfantsCount = parseInt(count)
@@ -38,35 +68,21 @@
     }
   }
 
-  function changeEnfantVariableValue(
+  function changeVariableValue(
+    isEnfant: boolean,
     index: number,
-    code: "age",
+    code: string,
     value: string,
   ) {
-    enfants = [...enfants]
-    enfants[index] = { ...enfants[index], [code]: parseInt(value) }
-  }
-
-  function changeIndividusCount(count: string): void {
-    const individusCount = parseInt(count)
-    if (individusCount === individus.length) {
-      return
+    let persons
+    if (isEnfant) {
+      enfants = [...enfants]
+      persons = enfants
+    } else {
+      adultes = [...adultes]
+      persons = adultes
     }
-    individus = individus.slice(0, Math.min(individus.length, individusCount))
-    while (individus.length < individusCount) {
-      individus.push({
-        salaire_de_base: 0,
-      })
-    }
-  }
-
-  function changeIndividuVariableValue(
-    index: number,
-    code: "salaire_de_base",
-    value: string,
-  ) {
-    individus = [...individus]
-    individus[index] = { ...individus[index], [code]: parseInt(value) }
+    persons[index] = { ...persons[index], [code]: parseInt(value) }
   }
 
   function computeAxis() {
@@ -77,14 +93,24 @@
             count: 100,
             index:
               axisDescription.index +
-              (axisDescription.isEnfant ? individus.length : 0),
-            max: 100000,
+              (axisDescription.isEnfant ? adultes.length : 0),
+            max: 100 * stepValue,
             min: 0,
             name: axisDescription.code,
             period: year.toString(),
           }
 
     dispatch("changeAxes", axis === null ? [] : [[axis]])
+  }
+
+  function getVariableValue(
+    isEnfant: boolean,
+    index: number,
+    code: string,
+  ): number {
+    const persons = isEnfant ? enfants : adultes
+    const person = persons[index]
+    return person[code]
   }
 
   function isAxis(
@@ -101,9 +127,32 @@
     )
   }
 
+  function* iterVariablesDefinition(isEnfant: boolean) {
+    const codes = isEnfant ? enfantVariablesCode : adulteVariablesCode
+    for (const code of codes) {
+      yield {
+        code,
+        ...variableDefinitionByCode[code],
+      }
+    }
+  }
+
+  function setVariableValue(
+    isEnfant: boolean,
+    index: number,
+    code: string,
+    value: number,
+  ): void {
+    const persons = isEnfant ? enfants : adultes
+    const person = persons[index]
+    person[code] = value
+  }
+
   function toggleAxis(isEnfant: boolean, index: number, code: string) {
     if (isAxis(axisDescription, isEnfant, index, code)) {
       axisDescription = null
+      setVariableValue(isEnfant, index, code, stepValue * vectorIndex)
+      stepValue = 0
       vectorIndex = 0
     } else {
       axisDescription = {
@@ -111,35 +160,37 @@
         index,
         isEnfant,
       }
-      vectorIndex = 0 // TODO
+      const { max, min } = variableDefinitionByCode[code]
+      const defaultStepValue = (max - min) / 100
+      const value = getVariableValue(isEnfant, index, code)
+      vectorIndex = Math.ceil(value / defaultStepValue)
+      stepValue = vectorIndex === 0 ? defaultStepValue : value / vectorIndex
     }
 
     computeAxis()
   }
 
-  function updateSituation(year, individus, enfants) {
+  function updateSituation(year, adultes, enfants) {
     const situation: Situation = {
       familles: {
         "Famille 1": {
-          parents: individus.map((_individu, index) => `Individu ${index + 1}`),
+          parents: adultes.map((_adulte, index) => `Adulte ${index + 1}`),
           enfants: enfants.map((enfants, index) => `Enfant ${index + 1}`),
         },
       },
       foyers_fiscaux: {
         "Foyer fiscal 1": {
-          declarants: individus.map(
-            (_individu, index) => `Individu ${index + 1}`,
-          ),
+          declarants: adultes.map((_adulte, index) => `Adulte ${index + 1}`),
           personnes_a_charge: enfants.map(
             (enfants, index) => `Enfant ${index + 1}`,
           ),
         },
       },
       individus: Object.fromEntries([
-        ...individus.map((individu, index) => [
-          `Individu ${index + 1}`,
+        ...adultes.map((adulte, index) => [
+          `Adulte ${index + 1}`,
           {
-            salaire_de_base: { [year]: individu.salaire_de_base },
+            salaire_de_base: { [year]: adulte.salaire_de_base },
           },
         ]),
         ...enfants.map((enfant, index) => [
@@ -151,10 +202,10 @@
       ]),
       menages: {
         "Ménage 1": {
-          personne_de_reference: ["Individu 1"],
-          conjoint: individus
+          personne_de_reference: ["Adulte 1"],
+          conjoint: adultes
             .slice(1)
-            .map((_individu, index) => `Individu ${index + 2}`),
+            .map((_adulte, index) => `Adulte ${index + 2}`),
           enfants: enfants.map((enfants, index) => `Enfant ${index + 1}`),
         },
       },
@@ -171,56 +222,61 @@
 </script>
 
 <label>
-  Nombre d'individus
+  Nombre d'adultes
   <input
     max={2}
     min={1}
-    on:change={({ target }) => changeIndividusCount(target.value)}
+    on:change={({ target }) => changeAdultesCount(target.value)}
     step="1"
     type="number"
-    value={individus.length}
+    value={adultes.length}
   />
 </label>
 
 <ul>
-  {#each individus as individu, index}
+  {#each adultes as _adulte, index}
     <li>
-      <label>
-        <input
-          checked={isAxis(axisDescription, false, index, "salaire_de_base")}
-          on:click={() => toggleAxis(false, index, "salaire_de_base")}
-          type="radio"
-        />
-        Axe
-      </label>
-      {#if isAxis(axisDescription, false, index, "salaire_de_base")}
-        <label>
-          Salaire annuel de base
-          <input
-            max="99"
-            min="0"
-            step="1"
-            type="range"
-            bind:value={vectorIndex}
-          />
-        </label>
-      {:else}
-        <label>
-          Salaire annuel de base
-          <input
-            min={0}
-            on:change={({ target }) =>
-              changeIndividuVariableValue(
-                index,
-                "salaire_de_base",
-                target.value,
-              )}
-            step="1"
-            type="number"
-            value={individu.salaire_de_base}
-          />
-        </label>
-      {/if}
+      {#each [...iterVariablesDefinition(false)] as { allowSlider, code, label, max, min }}
+        {#if allowSlider && isAxis(axisDescription, false, index, code)}
+          <label>
+            {label}
+            <input
+              class="mt-2 mx-2"
+              max="99"
+              min="0"
+              step="1"
+              type="range"
+              bind:value={vectorIndex}
+            />
+          </label>
+          <span class="leading-6 px-3 py-2 text-base"
+            >{Math.round(vectorIndex * stepValue)}</span
+          >
+        {:else}
+          <label>
+            {label}
+            <input
+              {max}
+              {min}
+              on:change={({ target }) =>
+                changeVariableValue(false, index, code, target.value)}
+              step="1"
+              type="number"
+              value={getVariableValue(false, index, code)}
+            />
+          </label>
+        {/if}
+        {#if allowSlider}
+          <label>
+            <input
+              checked={isAxis(axisDescription, false, index, code)}
+              on:click={() => toggleAxis(false, index, code)}
+              type="radio"
+            />
+            Faire varier
+          </label>
+        {/if}
+      {/each}
     </li>
   {/each}
 </ul>
@@ -238,20 +294,46 @@
 </label>
 
 <ul>
-  {#each enfants as enfant, index}
+  {#each enfants as _enfant, index}
     <li>
-      <label>
-        Âge
-        <input
-          max={150}
-          min={-1}
-          on:change={({ target }) =>
-            changeEnfantVariableValue(index, "age", target.value)}
-          step="1"
-          type="number"
-          value={enfant.age}
-        />
-      </label>
+      {#each [...iterVariablesDefinition(true)] as { allowSlider, code, label, max, min }}
+        {#if allowSlider && isAxis(axisDescription, true, index, code)}
+          <label>
+            {label}
+            <input
+              class="mt-2 mx-2"
+              max="99"
+              min="0"
+              step="1"
+              type="range"
+              bind:value={vectorIndex}
+            />
+          </label>
+        {:else}
+          <label>
+            {label}
+            <input
+              {max}
+              {min}
+              on:change={({ target }) =>
+                changeVariableValue(true, index, code, target.value)}
+              step="1"
+              type="number"
+              value={getVariableValue(true, index, code)}
+            />
+          </label>
+        {/if}
+        {#if allowSlider}
+          <label>
+            <input
+              checked={isAxis(axisDescription, true, index, code)}
+              on:click={() => toggleAxis(true, index, code)}
+              type="radio"
+            />
+            Faire varier
+          </label>
+        {/if}
+      {/each}
     </li>
   {/each}
 </ul>

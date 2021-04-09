@@ -10,6 +10,7 @@
   import TestCaseEdit from "$lib/TestCaseEdit.svelte"
   import Waterfall from "$lib/Waterfall"
 
+  let adaptYScale = false
   let axes: Axis[][] = []
   let deltaByCode: { [code: string]: number[] } = {}
   let decomposition = updateDecompositionValues(
@@ -258,10 +259,14 @@
       />
     </div>
 
-    <Waterfall {decomposition} {showNulls} {vectorIndex} />
+    <Waterfall {adaptYScale} {decomposition} {showNulls} {vectorIndex} />
   </div>
 
   <label
     ><input bind:checked={showNulls} type="checkbox" /> Montrer les montants nuls</label
+  >
+  <label
+    ><input bind:checked={adaptYScale} type="checkbox" /> Adapter en permanence l'échelle
+    des Y.</label
   >
 </main>

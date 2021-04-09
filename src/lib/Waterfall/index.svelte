@@ -8,6 +8,7 @@
   import AxisY from "./AxisY.svelte"
   import Column from "./Column.svelte"
 
+  export let adaptYScale: boolean
   export let decomposition: Decomposition
   export let showNulls: boolean
   export let vectorIndex: number
@@ -18,18 +19,31 @@
     .filter(({ delta }) => showNulls || delta[vectorIndex] !== 0)
     .map((node) => node.short_name)
 
-  $: yDomain = computeYDomain(data, vectorIndex)
+  $: yDomain = computeYDomain(data, adaptYScale ? vectorIndex : null)
 
-  function computeYDomain(data, vectorIndex): [number, number] {
+  function computeYDomain(data, vectorIndex?: number | null): [number, number] {
     let valueMin = undefined
     let valueMax = undefined
     for (const node of data) {
-      for (const value of node.values[vectorIndex]) {
-        if (valueMin === undefined || value < valueMin) {
-          valueMin = value
+      if (vectorIndex == null) {
+        for (const itemValues of node.values) {
+          for (const value of itemValues) {
+            if (valueMin === undefined || value < valueMin) {
+              valueMin = value
+            }
+            if (valueMax === undefined || value > valueMax) {
+              valueMax = value
+            }
+          }
         }
-        if (valueMax === undefined || value > valueMax) {
-          valueMax = value
+      } else {
+        for (const value of node.values[vectorIndex]) {
+          if (valueMin === undefined || value < valueMin) {
+            valueMin = value
+          }
+          if (valueMax === undefined || value > valueMax) {
+            valueMax = value
+          }
         }
       }
     }

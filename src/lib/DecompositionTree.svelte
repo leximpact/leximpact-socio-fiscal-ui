@@ -7,7 +7,7 @@
   export let vectorIndex: number
 </script>
 
-<button class="flex" on:click={() => (open = !open)}>
+<button class="align-top text-left" on:click={() => (open = !open)}>
   {#if decomposition.children === undefined}
     <span class="h5 w-5" />
   {:else if open}

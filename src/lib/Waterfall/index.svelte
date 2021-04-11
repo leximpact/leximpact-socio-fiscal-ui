@@ -19,13 +19,26 @@
     .filter(({ delta }) => showNulls || delta[vectorIndex] !== 0)
     .map((node) => node.short_name)
 
-  $: yDomain = computeYDomain(data, adaptYScale ? vectorIndex : null)
+  $: yDomain = computeYDomain(data, vectorIndex, adaptYScale)
 
-  function computeYDomain(data, vectorIndex?: number | null): [number, number] {
+  function computeYDomain(
+    data,
+    vectorIndex: number,
+    adaptYScale: boolean,
+  ): [number, number] {
     let valueMin = undefined
     let valueMax = undefined
     for (const node of data) {
-      if (vectorIndex == null) {
+      if (adaptYScale) {
+        for (const value of node.values[vectorIndex]) {
+          if (valueMin === undefined || value < valueMin) {
+            valueMin = value
+          }
+          if (valueMax === undefined || value > valueMax) {
+            valueMax = value
+          }
+        }
+      } else {
         for (const itemValues of node.values) {
           for (const value of itemValues) {
             if (valueMin === undefined || value < valueMin) {
@@ -34,15 +47,6 @@
             if (valueMax === undefined || value > valueMax) {
               valueMax = value
             }
-          }
-        }
-      } else {
-        for (const value of node.values[vectorIndex]) {
-          if (valueMin === undefined || value < valueMin) {
-            valueMin = value
-          }
-          if (valueMax === undefined || value > valueMax) {
-            valueMax = value
           }
         }
       }

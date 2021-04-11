@@ -49,6 +49,7 @@
       submit()
     }
   }
+
   function changeSituation({ detail }) {
     situation = detail
     if (webSocketOpen) {
@@ -58,7 +59,7 @@
 
   function openWebSocket() {
     webSocket = new Sockette(
-      new URL("ws", $session.apiWebSocketBaseUrl).toString(),
+      new URL("calculate", $session.apiWebSocketBaseUrl).toString(),
       {
         // maxAttempts: 10,
         onmessage: (event) => {

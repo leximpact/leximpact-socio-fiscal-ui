@@ -160,6 +160,14 @@
       stepValue = 0
       vectorIndex = 0
     } else {
+      if (axisDescription !== null) {
+        setVariableValue(
+          axisDescription.isEnfant,
+          axisDescription.index,
+          axisDescription.code,
+          Math.round(stepValue * vectorIndex),
+        )
+      }
       axisDescription = {
         code,
         index,

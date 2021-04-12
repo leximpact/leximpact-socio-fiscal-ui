@@ -151,7 +151,12 @@
   function toggleAxis(isEnfant: boolean, index: number, code: string) {
     if (isAxis(axisDescription, isEnfant, index, code)) {
       axisDescription = null
-      setVariableValue(isEnfant, index, code, stepValue * vectorIndex)
+      setVariableValue(
+        isEnfant,
+        index,
+        code,
+        Math.round(stepValue * vectorIndex),
+      )
       stepValue = 0
       vectorIndex = 0
     } else {

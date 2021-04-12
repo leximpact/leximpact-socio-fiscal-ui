@@ -106,24 +106,24 @@
       {#if parameter.values !== undefined}
         <div>
           <div>Valeurs :</div>
-          <table>
+          <table class="border border-collapse table-auto">
             <thead>
               <tr>
-                <th>Date</th>
-                <!-- <th>Nom</th> -->
-                <th>Valeur</th>
-                <th>Unité</th>
-                <th>Source</th>
+                <th class="border p-1 text-center">Date</th>
+                <!-- <th class="border p-1 text-center">Nom</th> -->
+                <th class="border p-1 text-center">Valeur</th>
+                <th class="border p-1 text-center">Unité</th>
+                <th class="border p-1 text-center">Source</th>
               </tr>
             </thead>
             <tbody>
               {#each parameter.values as { instant, /* name, */ source, unit, value }}
                 <tr>
-                  <td>{instant}</td>
-                  <!-- <td>{name}</td> -->
-                  <td>{value ?? ""}</td>
-                  <td>{unit ?? ""}</td>
-                  <td
+                  <td class="border p-1 text-center">{instant}</td>
+                  <!-- <td class= "border p-1 text-center">{name}</td> -->
+                  <td class="border p-1 text-center">{value ?? ""}</td>
+                  <td class="border p-1 text-center">{unit ?? ""}</td>
+                  <td class="border p-1 text-center"
                     >{#if source !== undefined}<a href={source}>source</a
                       >{/if}</td
                   >
@@ -136,35 +136,38 @@
     {:else if parameter.class === ParameterClass.Scale}
       <div>
         <div>Barème de type {parameter.type}:</div>
-        <table>
+        <table class="border border-collapse table-auto">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Seuil</th>
-              <th>Unité de seuil</th>
-              <th>Value</th>
+              <th class="border p-1 text-center">Date</th>
+              <th class="border p-1 text-center">Seuil</th>
+              <th class="border p-1 text-center">Unité de seuil</th>
+              <th class="border p-1 text-center">Value</th>
             </tr>
           </thead>
           <tbody>
             {#each Object.entries(parameter.brackets) as [instant, bracket]}
               {#if bracket === null}
                 <tr>
-                  <td>{instant}</td>
-                  <td colspan="3" />
+                  <td class="border p-1 text-center">{instant}</td>
+                  <td class="border p-1 text-center" colspan="3" />
                 </tr>
               {:else}
                 {#each Object.entries(bracket) as [threshold, value], index}
                   <tr>
                     {#if index === 0}
-                      <td rowspan={Object.keys(bracket).length}>{instant}</td>
+                      <td
+                        class="border p-1 text-center"
+                        rowspan={Object.keys(bracket).length}>{instant}</td
+                      >
                     {/if}
-                    <td>{threshold}</td>
-                    <td
+                    <td class="border p-1 text-center">{threshold}</td>
+                    <td class="border p-1 text-center"
                       >{parameter.rate_unit ??
                         parameter.threshold_unit ??
                         ""}</td
                     >
-                    <td>{value ?? ""}</td>
+                    <td class="border p-1 text-center">{value ?? ""}</td>
                   </tr>
                 {/each}
               {/if}

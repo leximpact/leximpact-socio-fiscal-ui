@@ -68,9 +68,13 @@
     </svg>
   {/if}
   <div>
-    <abbr title={parameter.name}>{id}</abbr>
+    {#if parameter.name === id}
+      <span>{id}</span>
+    {:else}
+      <abbr title={parameter.name}>{id}</abbr>
+    {/if}
     {#if parameter.description !== undefined}
-      : {parameter.description}
+      : <em>{parameter.description}</em>
     {/if}
     {#if parameter.documentation !== undefined}
       <div>{parameter.documentation}</div>
@@ -181,7 +185,7 @@
 {#if parameter.class === ParameterClass.Node && open}
   <ul class="ml-4">
     {#each Object.entries(parameter.children) as [childId, child]}
-      <li>
+      <li class="my-2">
         <svelte:self id={childId} parameter={child} />
       </li>
     {/each}

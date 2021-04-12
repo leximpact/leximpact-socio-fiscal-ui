@@ -69,7 +69,7 @@
 
   <ul>
     {#each Object.entries(parameter.children) as [childId, child]}
-      <li>
+      <li class="my-2">
         <ParameterTree id={childId} parameter={child} />
       </li>
     {/each}

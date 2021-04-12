@@ -93,7 +93,7 @@
           <dl>
             {#each Object.entries(parameter.reference) as [instant, reference]}
               <dt>{instant}</dt>
-              <dd>{reference}</dd>
+              <dd class="ml-4">{reference}</dd>
             {/each}
           </dl>
         {/if}

@@ -59,7 +59,7 @@
 
   function openWebSocket() {
     webSocket = new Sockette(
-      new URL("calculate", $session.apiWebSocketBaseUrl).toString(),
+      new URL("simulations/calculate", $session.apiWebSocketBaseUrl).toString(),
       {
         // maxAttempts: 10,
         onmessage: (event) => {

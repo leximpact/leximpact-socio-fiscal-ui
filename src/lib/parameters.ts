@@ -18,7 +18,7 @@ export interface ParameterBase {
   description?: string
   documentation?: string
   name: string
-  reference?: string | string[] | { [instant: string]: string }
+  reference?: string | string[] | { [instant: string]: string | string[] }
   source?: string
   unit?: Unit
 }
@@ -48,8 +48,10 @@ export enum ScaleType {
 }
 
 export enum Unit {
+  CodesDepartements = "codes départements",
   CountryCode = "ISO 3166-1 alpha-2", // Two-letters code of a country
   Currency = "currency",
+  Month = "month",
   Rate = "/1", // Number between 0 and 1
   Year = "year",
 }

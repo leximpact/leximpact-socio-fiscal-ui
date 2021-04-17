@@ -104,7 +104,9 @@
       </div>
     {/if}
     {#if parameter.source !== undefined}
-      <div>Source : <a href={parameter.source}>{parameter.source}</a></div>
+      <div>
+        Source : <a class="link" href={parameter.source}>{parameter.source}</a>
+      </div>
     {/if}
     {#if parameter.class === ParameterClass.Parameter}
       {#if parameter.values !== undefined}
@@ -128,7 +130,8 @@
                   <td class="border p-1 text-center">{value ?? ""}</td>
                   <td class="border p-1 text-center">{unit ?? ""}</td>
                   <td class="border p-1 text-center"
-                    >{#if source !== undefined}<a href={source}>source</a
+                    >{#if source !== undefined}<a class="link" href={source}
+                        >source</a
                       >{/if}</td
                   >
                 </tr>

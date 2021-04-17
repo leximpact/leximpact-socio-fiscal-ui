@@ -1,8 +1,11 @@
 <script context="module" lang="ts">
   import type { LoadInput, LoadOutput } from "@sveltejs/kit/types.internal"
 
-  export async function load({ fetch }: LoadInput): Promise<LoadOutput> {
-    const url = "https://fr.openfisca.org/api/latest/variables"
+  export async function load({
+    fetch,
+    session,
+  }: LoadInput): Promise<LoadOutput> {
+    const url = new URL("variables", session.apiBaseUrl).toString()
     const res = await fetch(url)
     if (!res.ok) {
       return {
@@ -12,7 +15,7 @@
     }
     return {
       props: {
-        variableById: await res.json(),
+        variableByName: await res.json(),
       },
     }
   }
@@ -20,9 +23,9 @@
 
 <script lang="ts">
   import { session } from "$app/stores"
-  import type { VariableSummaryById } from "$lib/variables"
+  import type { VariableSummaryByName } from "$lib/variables"
 
-  export let variableById: VariableSummaryById
+  export let variableByName: VariableSummaryByName
 </script>
 
 <svelte:head>
@@ -33,12 +36,12 @@
   <h1>Variables</h1>
 
   <ul class="list-disc list-inside">
-    {#each Object.entries(variableById) as [id, variable]}
+    {#each Object.entries(variableByName) as [name, variable]}
       <li>
-        <a href="variables/{id}">
-          <var>{id}</var>
-          {#if variable.description !== null}
-            : {variable.description}
+        <a class="link" href="variables/{name}">
+          <var>{name}</var>
+          {#if variable.label !== undefined}
+            : {variable.label}
           {/if}
         </a>
       </li>

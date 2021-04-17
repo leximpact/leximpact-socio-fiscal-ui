@@ -1,9 +1,9 @@
 <script lang="ts">
   import { scaleBand } from "d3-scale"
 
+  import { LayerCake, Svg } from "$lib/components/layercake"
   import type { Decomposition } from "$lib/decompositions"
   import { walkDecomposition } from "$lib/decompositions"
-  import { LayerCake, Svg } from "$lib/layercake"
   import AxisX from "./AxisX.svelte"
   import AxisY from "./AxisY.svelte"
   import Column from "./Column.svelte"

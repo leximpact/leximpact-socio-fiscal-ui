@@ -1,27 +1,32 @@
 export interface Formula {
-  content: string
   documentation?: string
+  parameters?: string[]
   source: string
+  source_code: string
+  variables?: string[]
 }
 
 export interface Variable {
-  defaultValue: boolean | number | string
-  definitionPeriod: "ETERNITY" | "MONTH" | "YEAR"
-  description: string | null
+  default_value: boolean | number | string
+  definition_period: "eternity" | "month" | "year"
+  documentation?: string
   entity: "famille" | "foyer_fiscal" | "individu" | "menage"
-  formulas?: { [date: string]: Formula }
-  id: string
-  possibleValues?: { [id: string]: string }
-  references?: string[]
+  formulas?: { [date: string]: Formula | null }
+  label?: string
+  name: string
+  possible_values?: { [name: string]: string }
+  reference?: string[]
+  referring_variables?: string[]
   source: string
+  // TODO
   valueType: "Boolean" | "Date" | "Float" | "Int" | "String"
 }
 
 export interface VariableSummary {
-  description: string | null
-  href: string
+  // href: string
+  label?: string
 }
 
-export interface VariableSummaryById {
-  [id: string]: VariableSummary
+export interface VariableSummaryByName {
+  [name: string]: VariableSummary
 }

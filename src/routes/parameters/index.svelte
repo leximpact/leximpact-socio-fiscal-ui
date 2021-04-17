@@ -55,7 +55,7 @@
 
 <script lang="ts">
   import { session } from "$app/stores"
-  import ParameterTree from "$lib/ParameterTree.svelte"
+  import ParameterTree from "$lib/components/ParameterTree.svelte"
 
   export let parameter: ParameterNode
 </script>

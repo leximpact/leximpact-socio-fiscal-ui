@@ -19,6 +19,7 @@ export interface ParameterBase {
   documentation?: string
   name: string
   reference?: string | string[] | { [instant: string]: string | string[] }
+  referring_variables?: string[]
   source?: string
   unit?: Unit
 }

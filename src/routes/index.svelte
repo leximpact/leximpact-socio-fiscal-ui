@@ -13,15 +13,19 @@
 
   <h2>Tests de l'API OpenFisca</h2>
   <ul>
-    <li><a href="/calculations">Calculs</a></li>
-    <li><a href="/entities">Entités</a></li>
-    <li><a href="/parameters">Paramètres</a></li>
-    <li><a href="/variables">Variables</a></li>
+    <li><a class="link" href="/calculations">Calculs</a></li>
+    <li><a class="link" href="/entities">Entités</a></li>
+    <li><a class="link" href="/parameters">Paramètres</a></li>
+    <li><a class="link" href="/variables">Variables</a></li>
   </ul>
 
   <h2>Documentation</h2>
   <ul>
-    <li><a href="/spec">Documentation de l'API</a></li>
-    <li><a href="/storybook">Storybook (design des éléments visuels)</a></li>
+    <li><a class="link" href="/spec">Documentation de l'API</a></li>
+    <li>
+      <a class="link" href="/storybook"
+        >Storybook (design des éléments visuels)</a
+      >
+    </li>
   </ul>
 </main>

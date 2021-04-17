@@ -3,12 +3,12 @@
 
   import { browser } from "$app/env"
   import { session } from "$app/stores"
+  import DecompositionTree from "$lib/components/DecompositionTree.svelte"
+  import TestCaseEdit from "$lib/components/TestCaseEdit.svelte"
+  import Waterfall from "$lib/components/Waterfall"
   import type { Decomposition } from "$lib/decompositions"
   import { decomposition as decompositionWithoutValue } from "$lib/decompositions"
-  import DecompositionTree from "$lib/DecompositionTree.svelte"
   import type { Axis, Situation } from "$lib/situations"
-  import TestCaseEdit from "$lib/TestCaseEdit.svelte"
-  import Waterfall from "$lib/Waterfall"
 
   let adaptYScale = false
   let axes: Axis[][] = []

@@ -17,10 +17,14 @@ export interface ParameterBase {
   class: ParameterClass
   description?: string
   documentation?: string
+  id: string // Generated attribute (last part of name)
   name: string
+  parent?: ParameterNode // Generated attribute
   reference?: string | string[] | { [instant: string]: string | string[] }
   referring_variables?: string[]
   source?: string
+  title: string // Generated attribute constructed using description or name
+  titles: string // Generated attribute aggregating the titles of every ancestors
   unit?: Unit
 }
 
@@ -31,7 +35,7 @@ export enum ParameterClass {
 }
 
 export interface ParameterNode extends ParameterBase {
-  children: { [name: string]: AnyParameter }
+  children: { [id: string]: AnyParameter }
   class: ParameterClass.Node
 }
 

@@ -1,7 +1,34 @@
 <script context="module" lang="ts">
   import type { LoadInput, LoadOutput } from "@sveltejs/kit/types.internal"
 
-  import type { ParameterNode } from "$lib/parameters"
+  import type { AnyParameter, ParameterNode } from "$lib/parameters"
+  import { ParameterClass } from "$lib/parameters"
+
+  function improveParameters(
+    parent: ParameterNode | undefined | null,
+    id: string,
+    parameter: AnyParameter,
+  ): void {
+    parameter.id = id
+    if (parent != null) {
+      parameter.parent = parent
+    }
+    const title =
+      parameter.description === undefined
+        ? id.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase())
+        : parameter.description
+    parameter.title = title
+    parameter.titles = parent == null ? title : [parent.titles, title].join(" ")
+
+    switch (parameter.class) {
+      case ParameterClass.Node:
+        for (const [id, child] of Object.entries(parameter.children)) {
+          improveParameters(parameter, id, child)
+        }
+        break
+      default:
+    }
+  }
 
   export async function load({
     fetch,
@@ -15,39 +42,11 @@
         error: new Error(`Could not load ${url}`),
       }
     }
-    const parameter = await res.json()
-    // const parameterById = await res.json()
-    // const parametersTree: { [id: string]: ParametersNode } = {}
-    // const parametersRootNode: ParametersNode = {
-    //   // Dummy root node of parameters tree.
-    //   children: parametersTree,
-    //   description: null,
-    //   href: "",
-    // }
-    // for (const parameterId of Object.keys(parameterById)) {
-    //   const idSegments: string[] = []
-    //   let node = parametersRootNode
-    //   for (const idSegment of parameterId.split(".")) {
-    //     idSegments.push(idSegment)
-    //     let tree = node.children
-    //     if (tree === undefined) {
-    //       tree = node.children = {}
-    //     }
-    //     node = tree[idSegment]
-    //     if (node === undefined) {
-    //       node = tree[idSegment] = {
-    //         description: null,
-    //         href: `https://fr.openfisca.org/api/latest/parameter/${idSegments.join(
-    //           "/",
-    //         )}`,
-    //       }
-    //     }
-    //   }
-    // }
+    const rootParameter = await res.json()
+    improveParameters(null, "", rootParameter)
     return {
       props: {
-        parameter,
-        // parametersTree,
+        rootParameter,
       },
     }
   }
@@ -55,9 +54,10 @@
 
 <script lang="ts">
   import { session } from "$app/stores"
-  import ParameterTree from "$lib/components/ParameterTree.svelte"
+  import ParametersSearch from "$lib/components/parameters/ParametersSearch.svelte"
+  // import ParameterTree from "$lib/components/parameters/ParameterTree.svelte"
 
-  export let parameter: ParameterNode
+  export let rootParameter: ParameterNode
 </script>
 
 <svelte:head>
@@ -67,11 +67,13 @@
 <main>
   <h1>Paramètres</h1>
 
-  <ul>
-    {#each Object.entries(parameter.children) as [childId, child]}
+  <ParametersSearch {rootParameter} />
+
+  <!-- <ul>
+    {#each Object.entries(rootParameter.children) as [childId, child]}
       <li class="my-2">
         <ParameterTree id={childId} parameter={child} />
       </li>
     {/each}
-  </ul>
+  </ul> -->
 </main>

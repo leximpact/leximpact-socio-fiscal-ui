@@ -79,12 +79,12 @@
           <img
             alt={title}
             class="block lg:hidden h-8 w-auto"
-            src="logo_100x100.png"
+            src="/logo_100x100.png"
           />
           <img
             alt={title}
             class="hidden lg:block h-8 w-auto"
-            src="logo_100x100.png"
+            src="/logo_100x100.png"
           />
         </div>
         <div class="hidden sm:block sm:ml-6">
@@ -138,7 +138,11 @@
               type="button"
             >
               <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 rounded-full" src="logo_100x100.png" alt="" />
+              <img
+                class="h-8 w-8 rounded-full"
+                src="/logo_100x100.png"
+                alt=""
+              />
             </button>
           </div>
           {#if openUserMenu}

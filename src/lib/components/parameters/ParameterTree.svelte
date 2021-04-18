@@ -26,6 +26,7 @@
 
 <button class="align-top flex text-left" on:click={() => (open = !open)}>
   {#if parameter.class !== ParameterClass.Node}
+    <!-- Heroicon name: solid/hashtag -->
     <svg
       class="h-5 w-5"
       fill="currentColor"

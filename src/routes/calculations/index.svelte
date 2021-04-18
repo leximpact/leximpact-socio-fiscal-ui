@@ -264,7 +264,7 @@
   </div> -->
 
   <div class="flex w-full">
-    <section class="overflow-auto w-1/3">
+    <section class="overflow-auto relative w-1/3">
       <CalculationPane
         action={query.pane1}
         {decomposition}
@@ -278,7 +278,7 @@
         {year}
       />
     </section>
-    <section class="overflow-auto w-2/3">
+    <section class="overflow-auto relative w-2/3">
       <CalculationPane
         action={query.pane2}
         {decomposition}
@@ -294,7 +294,7 @@
     </section>
   </div>
   <div class="flex w-full">
-    <section class="overflow-auto w-1/3">
+    <section class="overflow-auto relative w-1/3">
       <CalculationPane
         action={query.pane3}
         {decomposition}
@@ -308,7 +308,7 @@
         {year}
       />
     </section>
-    <section class="overflow-auto w-2/3">
+    <section class="overflow-auto relative w-2/3">
       <CalculationPane
         action={query.pane4}
         {decomposition}

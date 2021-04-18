@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getContext } from "svelte"
 
-  /* --------------------------------------------
-   * Default styles
-   */
+  import { goto } from "$app/navigation"
+
   export let blue = "blue"
   export let green = "green"
+  export let newSelfTargetUrl: (urlPath: string) => string
   export let red = "red"
   export let stroke = "black"
   export let strokeWidth = 0.1
@@ -30,6 +30,7 @@
         y = y0
       }
       yield {
+        code: node.code,
         fill: node.children === undefined ? (y0 < y1 ? red : green) : blue,
         fillOpacity: node.children === undefined ? 1 : 0.25,
         height,
@@ -42,18 +43,19 @@
 </script>
 
 <g class="column-group">
-  {#each [...iterColumns($data, $xGet, $xScale, $yGet)] as { fill, fillOpacity, height, width, x, y }, i}
+  {#each [...iterColumns($data, $xGet, $xScale, $yGet)] as { code, fill, fillOpacity, height, width, x, y }, i}
     <rect
       class="group-rect"
       data-id={i}
       {fill}
       fill-opacity={fillOpacity}
       {height}
+      on:click={() => goto(newSelfTargetUrl(`/variables/${code}`))}
+      {stroke}
+      stroke-width={strokeWidth}
       {width}
       {x}
       {y}
-      {stroke}
-      stroke-width={strokeWidth}
     />
   {/each}
 </g>

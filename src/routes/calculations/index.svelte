@@ -2,15 +2,14 @@
   import Sockette from "sockette"
 
   import { browser } from "$app/env"
-  import { session } from "$app/stores"
-  import DecompositionTree from "$lib/components/DecompositionTree.svelte"
-  import TestCaseEdit from "$lib/components/TestCaseEdit.svelte"
-  import Waterfall from "$lib/components/Waterfall"
+  import { page, session } from "$app/stores"
+  import { validateCalculationQuery } from "$lib/auditors/queries"
+  import type { ValidCalculationQuery } from "$lib/calculations"
+  import CalculationPane from "$lib/components/calculations/CalculationPane.svelte"
   import type { Decomposition } from "$lib/decompositions"
   import { decomposition as decompositionWithoutValue } from "$lib/decompositions"
   import type { Axis, Situation } from "$lib/situations"
 
-  let adaptYScale = false
   let axes: Axis[][] = []
   let deltaByCode: { [code: string]: number[] } = {}
   let decomposition = updateDecompositionValues(
@@ -25,6 +24,8 @@
   let webSocket: Sockette | undefined = undefined
   let webSocketOpen = false
   let year = 2021
+
+  $: query = ensureValidQuery($page.query)
 
   $: if (browser) {
     openWebSocket()
@@ -55,6 +56,25 @@
     if (webSocketOpen) {
       submit()
     }
+  }
+
+  function changeVectorIndex({ detail }) {
+    vectorIndex = detail
+  }
+
+  function ensureValidQuery(query: URLSearchParams): ValidCalculationQuery {
+    const [validQuery, queryError] = validateCalculationQuery(query)
+    if (queryError !== null) {
+      console.warn(
+        `Query error at ${$page.path}: ${JSON.stringify(
+          queryError,
+          null,
+          2,
+        )}\n\n${JSON.stringify(validQuery, null, 2)}`,
+      )
+      return {}
+    }
+    return validQuery
   }
 
   function openWebSocket() {
@@ -239,35 +259,71 @@
     <input max={2021} min={2013} step="1" type="number" bind:value={year} />
   </label>
 
-  <TestCaseEdit
-    bind:vectorIndex
-    on:changeAxes={changeAxes}
-    on:changeSituation={changeSituation}
-    {year}
-  />
-
-  <div>
+  <!-- <div>
     <button on:click={submit}>Simuler</button>
-  </div>
+  </div> -->
 
-  <div class="flex">
-    <div class="flex-shrink-0">
-      <DecompositionTree
+  <div class="flex w-full">
+    <section class="overflow-auto w-1/3">
+      <CalculationPane
+        action={query.pane1}
         {decomposition}
-        open={true}
+        on:changeAxes={changeAxes}
+        on:changeSituation={changeSituation}
+        on:changeVectorIndex={changeVectorIndex}
+        pane="pane1"
+        {query}
         {showNulls}
         {vectorIndex}
+        {year}
       />
-    </div>
-
-    <Waterfall {adaptYScale} {decomposition} {showNulls} {vectorIndex} />
+    </section>
+    <section class="overflow-auto w-2/3">
+      <CalculationPane
+        action={query.pane2}
+        {decomposition}
+        on:changeAxes={changeAxes}
+        on:changeSituation={changeSituation}
+        on:changeVectorIndex={changeVectorIndex}
+        pane="pane2"
+        {query}
+        {showNulls}
+        {vectorIndex}
+        {year}
+      />
+    </section>
   </div>
-
+  <div class="flex w-full">
+    <section class="overflow-auto w-1/3">
+      <CalculationPane
+        action={query.pane3}
+        {decomposition}
+        on:changeAxes={changeAxes}
+        on:changeSituation={changeSituation}
+        on:changeVectorIndex={changeVectorIndex}
+        pane="pane3"
+        {query}
+        {showNulls}
+        {vectorIndex}
+        {year}
+      />
+    </section>
+    <section class="overflow-auto w-2/3">
+      <CalculationPane
+        action={query.pane4}
+        {decomposition}
+        on:changeAxes={changeAxes}
+        on:changeSituation={changeSituation}
+        on:changeVectorIndex={changeVectorIndex}
+        pane="pane4"
+        {query}
+        {showNulls}
+        {vectorIndex}
+        {year}
+      />
+    </section>
+  </div>
   <label
     ><input bind:checked={showNulls} type="checkbox" /> Montrer les montants nuls</label
-  >
-  <label
-    ><input bind:checked={adaptYScale} type="checkbox" /> Adapter en permanence l'échelle
-    des Y.</label
   >
 </main>

@@ -40,6 +40,8 @@
     },
   }
 
+  $: dispatch("changeVectorIndex", vectorIndex)
+
   $: updateSituation(year, adultes, enfants)
 
   function changeAdultesCount(count: string): void {

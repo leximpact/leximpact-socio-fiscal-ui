@@ -53,22 +53,64 @@
 </script>
 
 <script lang="ts">
-  import { session } from "$app/stores"
+  import { goto } from "$app/navigation"
+  import { page, session } from "$app/stores"
   import ParametersSearch from "$lib/components/parameters/ParametersSearch.svelte"
   // import ParameterTree from "$lib/components/parameters/ParameterTree.svelte"
 
   export let rootParameter: ParameterNode
+
+  let initialTerm: string | undefined = undefined
+
+  $: term = $page.query.get("q") ?? ""
+
+  function searchTermChanged({ detail }: { detail: string }) {
+    if (initialTerm === undefined) {
+      initialTerm = term
+    }
+    term = detail
+    history.replaceState(
+      null,
+      "",
+      `${$page.path}${term ? `?q=${encodeURIComponent(term)}` : ""}`,
+    )
+  }
+
+  async function parameterClicked({
+    detail: parameter,
+  }: {
+    detail: AnyParameter
+  }) {
+    if (initialTerm !== undefined) {
+      // Restore the initial term in browser history.
+      await goto(
+        `${$page.path}${
+          initialTerm ? `?q=${encodeURIComponent(initialTerm)}` : ""
+        }`,
+        { replaceState: true },
+      )
+      // Push the current term.
+      await goto(`${$page.path}${term ? `?q=${encodeURIComponent(term)}` : ""}`)
+    }
+    // Go to parameter page.
+    await goto(`/parameters/${parameter.name}`)
+  }
 </script>
 
 <svelte:head>
-  <title>Paramètres | {$session.title}</title>
+  <title>Paramètres{term ? ` « ${term} »` : " "} | {$session.title}</title>
 </svelte:head>
 
 <main>
   <h1>Paramètres</h1>
 
-  <ParametersSearch {rootParameter} />
-
+  <ParametersSearch
+    dispatchItemClick={true}
+    on:change={searchTermChanged}
+    on:itemClick={parameterClicked}
+    {rootParameter}
+    {term}
+  />
   <!-- <ul>
     {#each Object.entries(rootParameter.children) as [childId, child]}
       <li class="my-2">

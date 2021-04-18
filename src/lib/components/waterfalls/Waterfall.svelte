@@ -8,10 +8,12 @@
   import AxisY from "./AxisY.svelte"
   import Column from "./Column.svelte"
 
-  export let adaptYScale: boolean
   export let decomposition: Decomposition
+  export let newSelfTargetUrl: (urlPath: string) => string
   export let showNulls: boolean
   export let vectorIndex: number
+
+  let adaptYScale = false
 
   $: data = [...walkDecomposition(decomposition, true)]
 
@@ -69,10 +71,15 @@
       {yDomain}
     >
       <Svg>
-        <Column />
+        <Column {newSelfTargetUrl} />
         <AxisX gridlines={false} />
         <AxisY textAnchor="end" />
       </Svg>
     </LayerCake>
   </div>
+
+  <label
+    ><input bind:checked={adaptYScale} type="checkbox" /> Adapter en permanence l'échelle
+    des Y.</label
+  >
 {/if}

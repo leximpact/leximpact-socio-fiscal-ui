@@ -1,19 +1,23 @@
 <script lang="ts">
   import Fuse from "fuse.js"
+  import { createEventDispatcher } from "svelte"
 
   import type { AnyParameter, ParameterNode } from "$lib/parameters"
   import { ParameterClass } from "$lib/parameters"
 
+  export let dispatchItemClick: boolean
   export let rootParameter: ParameterNode
   export let term = ""
 
-  let foundParameters: AnyParameter[] = []
+  const dispatch = createEventDispatcher()
 
   $: parameters = [...walkParameters(rootParameter)]
 
   $: fuse = new Fuse(parameters, {
     keys: ["id", "title", "titles"],
   })
+
+  $: foundParameters = fuse.search(term, { limit: 50 })
 
   function* iterParameterAncestors(
     parameter?: AnyParameter | undefined | null,
@@ -28,8 +32,14 @@
   function onInput(event: Event) {
     const target = event.target as HTMLInputElement
     term = target.value
-    // dispatch("input", target)
-    foundParameters = fuse.search(term, { limit: 50 })
+    dispatch("change", term)
+  }
+
+  function parameterClicked(event: Event, parameter: AnyParameter) {
+    if (dispatchItemClick) {
+      event.preventDefault()
+      dispatch("itemClick", parameter)
+    }
   }
 
   function* walkParameters(
@@ -59,7 +69,11 @@
   <ul class="list-disc list-inside">
     {#each foundParameters as parameter}
       <li>
-        <a class="link" href="/parameters/{parameter.name}">
+        <a
+          class="link"
+          on:click={(event) => parameterClicked(event, parameter)}
+          href="/parameters/{parameter.name}"
+        >
           {#each [...iterParameterAncestors(parameter)] as ancestor, index}
             {#if index > 0}&gt;{/if}
             <span class="mx-2 first:ml-0">{ancestor.title}</span>

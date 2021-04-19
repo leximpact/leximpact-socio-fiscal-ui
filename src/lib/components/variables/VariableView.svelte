@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { Variable } from "$lib/variables"
 
+  export let newSelfTargetUrl: (urlPath: string) => string
   export let variable: Variable
+
+  let date = new Date().toISOString().split("T")[0]
 </script>
 
 <h1>
@@ -78,6 +81,24 @@
         </dd>
       {/each}
     </dl>
+  </section>
+
+  <section>
+    <div>
+      <a
+        class="link"
+        href={newSelfTargetUrl(`/variables/${variable.name}/inputs/${date}`)}
+        >Variables d'entrée influant sur la formule, à la date du {date}</a
+      >
+    </div>
+    <div>
+      <a
+        class="link"
+        href={newSelfTargetUrl(
+          `/variables/${variable.name}/parameters/${date}`,
+        )}>Paramètres influant sur la formule, à la date du {date}</a
+      >
+    </div>
   </section>
 {/if}
 

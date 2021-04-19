@@ -5,6 +5,7 @@
   import DecompositionTree from "$lib/components/DecompositionTree.svelte"
   import TestCaseEdit from "$lib/components/TestCaseEdit.svelte"
   import VariablePane from "$lib/components/variables/VariablePane.svelte"
+  import VariableReferredInputsPane from "$lib/components/variables/VariableReferredInputsPane.svelte"
   import VariableReferredParametersPane from "$lib/components/variables/VariableReferredParametersPane.svelte"
   import Waterfall from "$lib/components/waterfalls/Waterfall.svelte"
   import type { Decomposition } from "$lib/decompositions"
@@ -18,12 +19,38 @@
   export let year: number
 
   let component = undefined
-  let customAction = false
+  let currentAction: string | null = null
   let properties = undefined
 
   $: newSelfTargetUrl = newSelfTargetUrlBuilder(pane)
 
   $: updateComponentAndProperties(action, pane)
+
+  function closePane() {
+    {
+      const match = /^variables\/([^/]+)\/inputs\/(\d{4}-\d{2}-\d{2})$/.exec(
+        currentAction,
+      )
+      if (match !== null) {
+        const name = match[1]
+        goto(newSelfTargetUrl(`/variables/${name}`))
+        return
+      }
+    }
+
+    {
+      const match = /^variables\/([^/]+)\/parameters\/(\d{4}-\d{2}-\d{2})$/.exec(
+        currentAction,
+      )
+      if (match !== null) {
+        const name = match[1]
+        goto(newSelfTargetUrl(`/variables/${name}`))
+        return
+      }
+    }
+
+    goto(newSelfTargetUrl(null))
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function newSelfTargetUrlBuilder(pane) {
@@ -34,6 +61,7 @@
           [pane]: undefined,
         })
       }
+      // Variable-related views are shown in pane3.
       if (urlPath === "/variables" || urlPath.startsWith("/variables/")) {
         return newCalculationUrl({
           ...query,
@@ -45,16 +73,28 @@
   }
 
   function updateComponentAndProperties(
-    action: string | undefined,
+    action: string | undefined | null,
     pane: "pane1" | "pane2" | "pane3" | "pane4",
   ) {
-    if (action !== undefined) {
+    if (action != null) {
       {
         const match = /^variables\/([^/]+)$/.exec(action)
         if (match !== null) {
-          customAction = true
+          currentAction = action
           component = VariablePane
           properties = { name: match[1] }
+          return
+        }
+      }
+
+      {
+        const match = /^variables\/([^/]+)\/inputs\/(\d{4}-\d{2}-\d{2})$/.exec(
+          action,
+        )
+        if (match !== null) {
+          currentAction = action
+          component = VariableReferredInputsPane
+          properties = { date: match[2], name: match[1] }
           return
         }
       }
@@ -64,7 +104,7 @@
           action,
         )
         if (match !== null) {
-          customAction = true
+          currentAction = action
           component = VariableReferredParametersPane
           properties = { date: match[2], name: match[1] }
           return
@@ -73,7 +113,7 @@
     }
 
     // No component found => Use default for pane.
-    customAction = false
+    currentAction = null
     switch (pane) {
       case "pane1":
         component = TestCaseEdit
@@ -91,10 +131,10 @@
   }
 </script>
 
-{#if customAction}
+{#if currentAction !== null}
   <button
     class="absolute border h-7 p-1 right-0 rounded top-0 w-7"
-    on:click={() => goto(newSelfTargetUrl(null))}
+    on:click={closePane}
   >
     <!-- Heroicon name: solid/x -->
     <svg
@@ -131,9 +171,11 @@
     {...properties}
   />
 {:else if component === VariablePane}
-  <VariablePane {...properties} />
+  <VariablePane {newSelfTargetUrl} {...properties} />
 {:else if component === VariableReferredParametersPane}
   <VariableReferredParametersPane {...properties} />
+{:else if component === VariableReferredInputsPane}
+  <VariableReferredInputsPane {...properties} />
 {:else if component === Waterfall}
   <Waterfall
     {decomposition}

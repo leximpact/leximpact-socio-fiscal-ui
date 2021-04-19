@@ -36,5 +36,5 @@
 </svelte:head>
 
 <main>
-  <VariableView {variable} />
+  <VariableView newSelfTargetUrl={(url) => url} {variable} />
 </main>

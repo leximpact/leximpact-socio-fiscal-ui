@@ -2,11 +2,12 @@
   import fetch from "cross-fetch"
 
   import { session } from "$app/stores"
+  import VariableReferredParameters from "$lib/components/variables/VariableReferredParameters.svelte"
   import type { AnyParameter } from "$lib/parameters"
 
   export let date: string
   export let name: string
-  export let pane: string
+  // export let pane: string
 
   let parameters: AnyParameter[] | undefined = undefined
 
@@ -34,10 +35,6 @@
   }
 </script>
 
-{#if parameters !== undefined && parameters.length > 0}
-  <ul>
-    {#each parameters as parameter}
-      <li>{parameter.name}</li>
-    {/each}
-  </ul>
+{#if parameters !== undefined}
+  <VariableReferredParameters {parameters} />
 {/if}

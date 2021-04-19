@@ -6,7 +6,8 @@
   import type { Variable } from "$lib/variables"
 
   export let name: string
-  export let pane: string
+  export let newSelfTargetUrl: (urlPath: string) => string
+  // export let pane: string
 
   let variable: Variable | undefined = undefined
 
@@ -29,5 +30,5 @@
 </script>
 
 {#if variable !== undefined}
-  <VariableView {variable} />
+  <VariableView {newSelfTargetUrl} {variable} />
 {/if}

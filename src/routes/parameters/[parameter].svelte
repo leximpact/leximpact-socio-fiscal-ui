@@ -48,5 +48,10 @@
 </svelte:head>
 
 <main>
-  <ParameterView {ancestors} editable={true} {parameter} />
+  <ParameterView
+    {ancestors}
+    editable={true}
+    newSelfTargetUrl={(url) => url}
+    {parameter}
+  />
 </main>

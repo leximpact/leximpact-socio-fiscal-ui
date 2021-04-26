@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Variable } from "$lib/variables"
 
+  export let newSelfTargetUrl: (urlPath: string) => string
   export let variables: Variable[]
 </script>
 
@@ -8,7 +9,9 @@
   <ul>
     {#each variables as variable}
       <li>
-        <a class="link" href="/variables/{variable.name}">{variable.name}</a>
+        <a class="link" href={newSelfTargetUrl(`/variables/${variable.name}`)}
+          >{variable.name}</a
+        >
       </li>
     {/each}
   </ul>

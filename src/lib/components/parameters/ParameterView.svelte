@@ -8,6 +8,7 @@
 
   export let ancestors: ParameterNode[]
   export let editable: boolean
+  export let newSelfTargetUrl: (urlPath: string) => string
   export let parameter: AnyParameter
 
   const reform = getContext("reform") as Writable<ReformChange>
@@ -42,7 +43,7 @@
 <h1>
   Paramètre
   {#each ancestors as ancestor}
-    <a class="link" href="/parameters/{ancestor.name}">
+    <a class="link" href={newSelfTargetUrl(`/parameters/${ancestor.name}`)}>
       {ancestor.title}
     </a>
     &gt;
@@ -91,7 +92,7 @@
   <ul class="ml-4">
     {#each Object.entries(parameter.children) as [childId, child]}
       <li class="my-2">
-        <a class="link" href="/parameters/{child.name}">
+        <a class="link" href={newSelfTargetUrl(`/parameters/${child.name}`)}>
           {child.title}
         </a>
       </li>
@@ -198,7 +199,9 @@
     <ul class="list-disc list-inside">
       {#each parameter.referring_variables as variableName}
         <li>
-          <a class="link" href="/variables/{variableName}">{variableName}</a>
+          <a class="link" href={newSelfTargetUrl(`/variables/${variableName}`)}
+            >{variableName}</a
+          >
         </li>
       {/each}
     </ul>

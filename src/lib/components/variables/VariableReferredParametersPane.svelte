@@ -7,6 +7,7 @@
 
   export let date: string
   export let name: string
+  export let newSelfTargetUrl: (urlPath: string) => string
   // export let pane: string
 
   let parameters: AnyParameter[] | undefined = undefined
@@ -36,5 +37,5 @@
 </script>
 
 {#if parameters !== undefined}
-  <VariableReferredParameters {parameters} />
+  <VariableReferredParameters {newSelfTargetUrl} {parameters} />
 {/if}

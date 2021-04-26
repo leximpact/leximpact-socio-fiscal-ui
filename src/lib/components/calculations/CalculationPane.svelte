@@ -3,6 +3,7 @@
   import type { ValidCalculationQuery } from "$lib/calculations"
   import { newCalculationUrl } from "$lib/calculations"
   import DecompositionTree from "$lib/components/DecompositionTree.svelte"
+  import ParameterPane from "$lib/components/parameters/ParameterPane.svelte"
   import TestCaseEdit from "$lib/components/TestCaseEdit.svelte"
   import VariablePane from "$lib/components/variables/VariablePane.svelte"
   import VariableReferredInputsPane from "$lib/components/variables/VariableReferredInputsPane.svelte"
@@ -25,61 +26,30 @@
 
   $: updateComponentAndProperties(actions, pane)
 
-  function closePane() {
+  function closeWindow() {
     actions = [...actions]
     actions.pop()
     if (actions.length === 0) {
       actions = undefined
     }
-    const action =
-      actions === undefined ? undefined : actions[actions.length - 1]
-
-    if (action !== undefined) {
-      {
-        const match = /^variables\/([^/]+)\/inputs\/(\d{4}-\d{2}-\d{2})$/.exec(
-          action,
-        )
-        if (match !== null) {
-          const name = match[1]
-          goto(newSelfTargetUrl(`/variables/${name}`))
-          return
-        }
-      }
-
-      {
-        const match = /^variables\/([^/]+)\/parameters\/(\d{4}-\d{2}-\d{2})$/.exec(
-          action,
-        )
-        if (match !== null) {
-          const name = match[1]
-          goto(newSelfTargetUrl(`/variables/${name}`))
-          return
-        }
-      }
-    }
-
-    goto(newSelfTargetUrl(null))
+    goto(
+      newCalculationUrl({
+        ...query,
+        [pane]: actions,
+      }),
+    )
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function newSelfTargetUrlBuilder(pane) {
-    return (urlPath: string | undefined | null): string => {
-      if (urlPath == null) {
-        // Remove top most "window" from pane.
-        let actions = query[pane]
-        if (actions !== undefined) {
-          actions = actions.slice(0, -1)
-          if (actions.length === 0) {
-            actions = undefined
-          }
-        }
-        return newCalculationUrl({
-          ...query,
-          [pane]: actions,
-        })
-      }
+    return (urlPath: string): string => {
       // Variable-related views are shown in pane3.
-      if (urlPath === "/variables" || urlPath.startsWith("/variables/")) {
+      if (
+        urlPath === "/parameters" ||
+        urlPath.startsWith("/parameters/") ||
+        urlPath === "/variables" ||
+        urlPath.startsWith("/variables/")
+      ) {
         const actions = [...(query.pane3 ?? []), urlPath.replace(/^\/+/, "")]
         return newCalculationUrl({
           ...query,
@@ -96,6 +66,15 @@
   ) {
     const action = actions == null ? null : actions[actions.length - 1]
     if (action != null) {
+      {
+        const match = /^parameters\/([^/]+)$/.exec(action)
+        if (match !== null) {
+          component = ParameterPane
+          properties = { name: match[1] }
+          return
+        }
+      }
+
       {
         const match = /^variables\/([^/]+)$/.exec(action)
         if (match !== null) {
@@ -149,7 +128,7 @@
 {#if actions !== undefined}
   <button
     class="absolute border h-7 p-1 right-0 rounded top-0 w-7"
-    on:click={closePane}
+    on:click={closeWindow}
   >
     <!-- Heroicon name: solid/x -->
     <svg
@@ -176,6 +155,8 @@
     {vectorIndex}
     {...properties}
   />
+{:else if component === ParameterPane}
+  <ParameterPane {newSelfTargetUrl} {...properties} />
 {:else if component === TestCaseEdit}
   <TestCaseEdit
     on:changeAxes
@@ -187,10 +168,10 @@
   />
 {:else if component === VariablePane}
   <VariablePane {newSelfTargetUrl} {...properties} />
-{:else if component === VariableReferredParametersPane}
-  <VariableReferredParametersPane {...properties} />
 {:else if component === VariableReferredInputsPane}
-  <VariableReferredInputsPane {...properties} />
+  <VariableReferredInputsPane {newSelfTargetUrl} {...properties} />
+{:else if component === VariableReferredParametersPane}
+  <VariableReferredParametersPane {newSelfTargetUrl} {...properties} />
 {:else if component === Waterfall}
   <Waterfall
     {decomposition}

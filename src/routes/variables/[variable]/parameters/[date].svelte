@@ -47,5 +47,5 @@
 </svelte:head>
 
 <main>
-  <VariableReferredParameters {parameters} />
+  <VariableReferredParameters newSelfTargetUrl={(url) => url} {parameters} />
 </main>

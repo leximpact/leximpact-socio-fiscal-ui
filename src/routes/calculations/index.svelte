@@ -266,7 +266,7 @@
   <div class="flex w-full">
     <section class="overflow-auto relative w-1/3">
       <CalculationPane
-        action={query.pane1}
+        actions={query.pane1}
         {decomposition}
         on:changeAxes={changeAxes}
         on:changeSituation={changeSituation}
@@ -280,7 +280,7 @@
     </section>
     <section class="overflow-auto relative w-2/3">
       <CalculationPane
-        action={query.pane2}
+        actions={query.pane2}
         {decomposition}
         on:changeAxes={changeAxes}
         on:changeSituation={changeSituation}
@@ -296,7 +296,7 @@
   <div class="flex w-full">
     <section class="overflow-auto relative w-1/3">
       <CalculationPane
-        action={query.pane3}
+        actions={query.pane3}
         {decomposition}
         on:changeAxes={changeAxes}
         on:changeSituation={changeSituation}
@@ -310,7 +310,7 @@
     </section>
     <section class="overflow-auto relative w-2/3">
       <CalculationPane
-        action={query.pane4}
+        actions={query.pane4}
         {decomposition}
         on:changeAxes={changeAxes}
         on:changeSituation={changeSituation}

@@ -10,7 +10,7 @@
   import Waterfall from "$lib/components/waterfalls/Waterfall.svelte"
   import type { Decomposition } from "$lib/decompositions"
 
-  export let action: string | undefined
+  export let actions: string[] | undefined
   export let decomposition: Decomposition
   export let pane: "pane1" | "pane2" | "pane3" | "pane4"
   export let query: ValidCalculationQuery
@@ -19,33 +19,42 @@
   export let year: number
 
   let component = undefined
-  let currentAction: string | null = null
   let properties = undefined
 
   $: newSelfTargetUrl = newSelfTargetUrlBuilder(pane)
 
-  $: updateComponentAndProperties(action, pane)
+  $: updateComponentAndProperties(actions, pane)
 
   function closePane() {
-    {
-      const match = /^variables\/([^/]+)\/inputs\/(\d{4}-\d{2}-\d{2})$/.exec(
-        currentAction,
-      )
-      if (match !== null) {
-        const name = match[1]
-        goto(newSelfTargetUrl(`/variables/${name}`))
-        return
-      }
+    actions = [...actions]
+    actions.pop()
+    if (actions.length === 0) {
+      actions = undefined
     }
+    const action =
+      actions === undefined ? undefined : actions[actions.length - 1]
 
-    {
-      const match = /^variables\/([^/]+)\/parameters\/(\d{4}-\d{2}-\d{2})$/.exec(
-        currentAction,
-      )
-      if (match !== null) {
-        const name = match[1]
-        goto(newSelfTargetUrl(`/variables/${name}`))
-        return
+    if (action !== undefined) {
+      {
+        const match = /^variables\/([^/]+)\/inputs\/(\d{4}-\d{2}-\d{2})$/.exec(
+          action,
+        )
+        if (match !== null) {
+          const name = match[1]
+          goto(newSelfTargetUrl(`/variables/${name}`))
+          return
+        }
+      }
+
+      {
+        const match = /^variables\/([^/]+)\/parameters\/(\d{4}-\d{2}-\d{2})$/.exec(
+          action,
+        )
+        if (match !== null) {
+          const name = match[1]
+          goto(newSelfTargetUrl(`/variables/${name}`))
+          return
+        }
       }
     }
 
@@ -56,16 +65,25 @@
   function newSelfTargetUrlBuilder(pane) {
     return (urlPath: string | undefined | null): string => {
       if (urlPath == null) {
+        // Remove top most "window" from pane.
+        let actions = query[pane]
+        if (actions !== undefined) {
+          actions = actions.slice(0, -1)
+          if (actions.length === 0) {
+            actions = undefined
+          }
+        }
         return newCalculationUrl({
           ...query,
-          [pane]: undefined,
+          [pane]: actions,
         })
       }
       // Variable-related views are shown in pane3.
       if (urlPath === "/variables" || urlPath.startsWith("/variables/")) {
+        const actions = [...(query.pane3 ?? []), urlPath.replace(/^\/+/, "")]
         return newCalculationUrl({
           ...query,
-          pane3: urlPath.replace(/^\/+/, ""),
+          pane3: actions,
         })
       }
       return urlPath
@@ -73,14 +91,14 @@
   }
 
   function updateComponentAndProperties(
-    action: string | undefined | null,
+    actions: string[] | undefined | null,
     pane: "pane1" | "pane2" | "pane3" | "pane4",
   ) {
+    const action = actions == null ? null : actions[actions.length - 1]
     if (action != null) {
       {
         const match = /^variables\/([^/]+)$/.exec(action)
         if (match !== null) {
-          currentAction = action
           component = VariablePane
           properties = { name: match[1] }
           return
@@ -92,7 +110,6 @@
           action,
         )
         if (match !== null) {
-          currentAction = action
           component = VariableReferredInputsPane
           properties = { date: match[2], name: match[1] }
           return
@@ -104,7 +121,6 @@
           action,
         )
         if (match !== null) {
-          currentAction = action
           component = VariableReferredParametersPane
           properties = { date: match[2], name: match[1] }
           return
@@ -113,7 +129,6 @@
     }
 
     // No component found => Use default for pane.
-    currentAction = null
     switch (pane) {
       case "pane1":
         component = TestCaseEdit
@@ -131,7 +146,7 @@
   }
 </script>
 
-{#if currentAction !== null}
+{#if actions !== undefined}
   <button
     class="absolute border h-7 p-1 right-0 rounded top-0 w-7"
     on:click={closePane}

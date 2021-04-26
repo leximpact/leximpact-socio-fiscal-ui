@@ -3,7 +3,6 @@ import {
   auditArray,
   auditSetNullish,
   auditString,
-  auditTest,
   cleanAudit,
 } from "@auditors/core"
 
@@ -38,10 +37,6 @@ export function auditCalculationQuery(
       errors,
       remainingKeys,
       auditArray(auditString),
-      auditTest(
-        (array) => array.length === 1,
-        "Query parameter must be given at most once",
-      ),
     )
   }
 

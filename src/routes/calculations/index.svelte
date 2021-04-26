@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { getContext } from "svelte"
+  import type { Writable } from "svelte/store"
   import Sockette from "sockette"
 
   import { browser } from "$app/env"
@@ -8,6 +10,7 @@
   import CalculationPane from "$lib/components/calculations/CalculationPane.svelte"
   import type { Decomposition } from "$lib/decompositions"
   import { decomposition as decompositionWithoutValue } from "$lib/decompositions"
+  import type { ReformChange } from "$lib/reforms"
   import type { Axis, Situation } from "$lib/situations"
 
   let axes: Axis[][] = []
@@ -17,6 +20,7 @@
     deltaByCode,
     1, // vectorLength
   )
+  const reform = getContext("reform") as Writable<ReformChange>
   let showNulls = false
   let situation: Situation | undefined = undefined
   let vectorIndex = 0
@@ -189,6 +193,7 @@
     webSocket.send(
       JSON.stringify({
         decomposition,
+        reform: $reform,
         situation: situationWithAxes,
         period: year.toString(),
       }),
@@ -259,9 +264,9 @@
     <input max={2021} min={2013} step="1" type="number" bind:value={year} />
   </label>
 
-  <!-- <div>
-    <button on:click={submit}>Simuler</button>
-  </div> -->
+  <div>
+    <button class="border rounded p-1" on:click={submit}>Simuler</button>
+  </div>
 
   <div class="flex w-full">
     <section class="overflow-auto relative w-1/3">

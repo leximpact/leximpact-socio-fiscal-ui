@@ -12,6 +12,8 @@
   export let parameter: AnyParameter
 
   const reform = getContext("reform") as Writable<ReformChange>
+  let validStart = undefined
+  let validValue = undefined
 
   $: change = $reform[parameter.name]
 
@@ -19,23 +21,28 @@
 
   $: value = change?.value
 
-  const changeStart = (start) => {
-    $reform = {
-      ...$reform,
-      [parameter.name]: {
-        ...change,
-        start,
-      },
-    }
+  function changeStart(start) {
+    validStart = start
+    updateReform(validStart, validValue)
   }
 
-  const changeValue = (value) => {
-    $reform = {
-      ...$reform,
-      [parameter.name]: {
-        ...change,
-        value,
-      },
+  function changeValue(value) {
+    validValue = parseFloat(value)
+    if (value == null || Number.isNaN(validValue)) {
+      validValue = undefined
+    }
+    updateReform(validStart, validValue)
+  }
+
+  function updateReform(start: string, value) {
+    if (start !== undefined && value !== undefined) {
+      $reform = {
+        ...$reform,
+        [parameter.name]: {
+          start,
+          value: validValue,
+        },
+      }
     }
   }
 </script>

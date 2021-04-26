@@ -7,7 +7,9 @@
 {#if parameters.length > 0}
   <ul>
     {#each parameters as parameter}
-      <li>{parameter.name}</li>
+      <li>
+        <a class="link" href="/parameters/{parameter.name}">{parameter.name}</a>
+      </li>
     {/each}
   </ul>
 {/if}

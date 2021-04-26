@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte"
 
   import type { AnyParameter, ParameterNode } from "$lib/parameters"
-  import { ParameterClass } from "$lib/parameters"
+  import { iterParameterAncestors, ParameterClass } from "$lib/parameters"
 
   export let dispatchItemClick: boolean
   export let rootParameter: ParameterNode
@@ -17,17 +17,7 @@
     keys: ["id", "title", "titles"],
   })
 
-  $: foundParameters = fuse.search(term, { limit: 50 })
-
-  function* iterParameterAncestors(
-    parameter?: AnyParameter | undefined | null,
-  ): Generator<AnyParameter, void, unknown> {
-    if (parameter == null || !parameter.id) {
-      return
-    }
-    yield* iterParameterAncestors(parameter.parent)
-    yield parameter
-  }
+  $: found = fuse.search(term, { limit: 50 })
 
   function onInput(event: Event) {
     const target = event.target as HTMLInputElement
@@ -65,9 +55,9 @@
 
 <input autocomplete="off" on:input={onInput} type="search" value={term} />
 
-{#if foundParameters.length > 0}
+{#if found.length > 0}
   <ul class="list-disc list-inside">
-    {#each foundParameters as parameter}
+    {#each found as { item: parameter }}
       <li>
         <a
           class="link"

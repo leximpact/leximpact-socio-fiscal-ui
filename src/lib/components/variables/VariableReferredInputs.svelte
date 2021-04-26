@@ -7,7 +7,9 @@
 {#if variables.length > 0}
   <ul>
     {#each variables as variable}
-      <li>{variable.name}</li>
+      <li>
+        <a class="link" href="/variables/{variable.name}">{variable.name}</a>
+      </li>
     {/each}
   </ul>
 {/if}

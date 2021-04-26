@@ -35,7 +35,7 @@ export enum ParameterClass {
 }
 
 export interface ParameterNode extends ParameterBase {
-  children: { [id: string]: AnyParameter }
+  children?: { [id: string]: AnyParameter } // Children are removed from ancestors.
   class: ParameterClass.Node
 }
 
@@ -59,4 +59,43 @@ export enum Unit {
   Month = "month",
   Rate = "/1", // Number between 0 and 1
   Year = "year",
+}
+
+export function improveParameter(
+  parent: ParameterNode | undefined | null,
+  parameter: AnyParameter,
+): void {
+  const nameSplit = parameter.name.split(".")
+  const id = nameSplit[nameSplit.length - 1]
+  parameter.id = id
+  if (parent != null) {
+    parameter.parent = parent
+  }
+  const title =
+    parameter.description === undefined
+      ? id.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase())
+      : parameter.description
+  parameter.title = title
+  parameter.titles = parent == null ? title : [parent.titles, title].join(" ")
+
+  switch (parameter.class) {
+    case ParameterClass.Node:
+      if (parameter.children !== undefined) {
+        for (const child of Object.values(parameter.children)) {
+          improveParameter(parameter, child)
+        }
+      }
+      break
+    default:
+  }
+}
+
+export function* iterParameterAncestors(
+  parameter?: AnyParameter | undefined | null,
+): Generator<AnyParameter, void, unknown> {
+  if (parameter == null || !parameter.id) {
+    return
+  }
+  yield* iterParameterAncestors(parameter.parent)
+  yield parameter
 }

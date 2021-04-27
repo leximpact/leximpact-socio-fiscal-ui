@@ -30,5 +30,5 @@
 </script>
 
 {#if variable !== undefined}
-  <VariableView {newSelfTargetUrl} {variable} />
+  <VariableView editable={true} {newSelfTargetUrl} {variable} />
 {/if}

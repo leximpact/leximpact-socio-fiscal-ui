@@ -8,6 +8,12 @@
 
   const reform = writable({})
   setContext("reform", reform)
+
+  const situationComplement = writable({})
+  setContext("situationComplement", situationComplement)
+
+  const situationCore = writable({})
+  setContext("situationCore", situationCore)
 </script>
 
 <NavBar />

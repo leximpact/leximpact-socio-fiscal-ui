@@ -6,6 +6,10 @@ export interface Formula {
   variables?: string[]
 }
 
+export interface InputByVariableName {
+  [variableName: string]: Array<boolean | number | string>
+}
+
 export interface Variable {
   default_value: boolean | number | string
   definition_period: "eternity" | "month" | "year"
@@ -18,8 +22,7 @@ export interface Variable {
   reference?: string[]
   referring_variables?: string[]
   source: string
-  // TODO
-  valueType: "Boolean" | "Date" | "Float" | "Int" | "String"
+  value_type: "bool" | "date" | "float" | "int" | "str"
 }
 
 export interface VariableSummary {

@@ -11,7 +11,7 @@
   import type { Decomposition } from "$lib/decompositions"
   import { decomposition as decompositionWithoutValue } from "$lib/decompositions"
   import type { ReformChange } from "$lib/reforms"
-  import type { Axis, Situation } from "$lib/situations"
+  import type { Axis, Situation, SituationComplement } from "$lib/situations"
 
   let axes: Axis[][] = []
   let deltaByCode: { [code: string]: number[] } = {}
@@ -23,6 +23,10 @@
   const reform = getContext("reform") as Writable<ReformChange>
   let showNulls = false
   let situation: Situation | undefined = undefined
+  let situationComplement = getContext(
+    "situationComplement",
+  ) as Writable<SituationComplement>
+  let situationCore = getContext("situationCore") as Writable<Situation>
   let vectorIndex = 0
   let vectorLength = 1
   let webSocket: Sockette | undefined = undefined
@@ -57,6 +61,7 @@
 
   function changeSituation({ detail }) {
     situation = detail
+    $situationCore = situation
     if (webSocketOpen) {
       submit()
     }
@@ -122,7 +127,28 @@
     if (situation === undefined) {
       return
     }
-    let situationWithAxes = situation
+
+    let situationWithAxes = { ...situation }
+    for (const [entityPlural, entitySituationComplement] of Object.entries(
+      $situationComplement,
+    )) {
+      const entitySituation = (situationWithAxes[entityPlural] = {
+        ...situationWithAxes[entityPlural],
+      })
+      for (const [itemName, itemSituationComplement] of Object.entries(
+        entitySituationComplement,
+      )) {
+        const itemSituation = (entitySituation[itemName] = {
+          ...entitySituation[itemName],
+        })
+        for (const [variableName, variableValue] of Object.entries(
+          itemSituationComplement,
+        )) {
+          itemSituation[variableName] = { [year]: variableValue }
+        }
+      }
+    }
+
     if (axes.length > 0) {
       // Remove variables used as axes from situation (otherwise OpenFisca Core fails).
       situationWithAxes = {

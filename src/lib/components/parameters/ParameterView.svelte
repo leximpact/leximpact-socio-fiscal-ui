@@ -4,14 +4,14 @@
 
   import type { AnyParameter, ParameterNode } from "$lib/parameters"
   import { ParameterClass } from "$lib/parameters"
-  import type { ReformChange } from "$lib/reforms"
+  import type { Reform } from "$lib/reforms"
 
   export let ancestors: ParameterNode[]
   export let editable: boolean
   export let newSelfTargetUrl: (urlPath: string) => string
   export let parameter: AnyParameter
 
-  const reform = getContext("reform") as Writable<ReformChange>
+  const reform = getContext("reform") as Writable<Reform>
   let validStart = undefined
   let validValue = undefined
 
@@ -28,7 +28,7 @@
 
   function changeValue(value) {
     validValue = parseFloat(value)
-    if (value == null || Number.isNaN(validValue)) {
+    if (validValue == null || Number.isNaN(validValue)) {
       validValue = undefined
     }
     updateReform(validStart, validValue)

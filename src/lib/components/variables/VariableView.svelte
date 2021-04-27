@@ -1,10 +1,50 @@
 <script lang="ts">
+  import { getContext } from "svelte"
+  import type { Writable } from "svelte/store"
+
+  import { pluralByEntityKey } from "$lib/entities"
+  import type { SituationComplement, Situation } from "$lib/situations"
   import type { Variable } from "$lib/variables"
 
+  export let editable: boolean
   export let newSelfTargetUrl: (urlPath: string) => string
   export let variable: Variable
 
   let date = new Date().toISOString().split("T")[0]
+  const situationComplement = getContext(
+    "situationComplement",
+  ) as Writable<SituationComplement>
+  const situationCore = getContext("situationCore") as Writable<Situation>
+
+  $: entityPlural = pluralByEntityKey[variable.entity]
+
+  $: entitySituationComplement = $situationComplement[entityPlural]
+
+  $: entitySituation = $situationCore[entityPlural]
+
+  function changeValue(itemName, itemValue) {
+    switch (variable.value_type) {
+      case "float":
+        itemValue = parseFloat(itemValue)
+        if (itemValue == null || Number.isNaN(itemValue)) {
+          itemValue = null
+        }
+        break
+      case "int":
+        itemValue = parseInt(itemValue)
+        if (itemValue == null || Number.isNaN(itemValue)) {
+          itemValue = null
+        }
+        break
+    }
+    $situationComplement[entityPlural] = {
+      ...(entitySituationComplement ?? {}),
+      [itemName]: {
+        ...(entitySituationComplement?.[itemName] ?? {}),
+        [variable.name]: itemValue ?? variable.default_value,
+      },
+    }
+  }
 </script>
 
 <h1>
@@ -19,6 +59,18 @@
   <div class="whitespace-pre-line">
     {variable.documentation.replace(/^\n+/, "").replace(/\n+$/, "")}
   </div>
+{/if}
+
+{#if variable.definition_period !== undefined}
+  <div>Période de définition : {variable.definition_period}</div>
+{/if}
+
+{#if variable.entity !== undefined}
+  <div>Entité : {variable.entity}</div>
+{/if}
+
+{#if variable.value_type !== undefined}
+  <div>Type de valeur : {variable.value_type}</div>
 {/if}
 
 {#if variable.reference !== undefined}
@@ -102,6 +154,38 @@
   </section>
 {/if}
 
+{#if editable}
+  <section>
+    <h1>Valeur</h1>
+    <ul>
+      {#each Object.keys(entitySituation ?? {}) as itemName}
+        <li>
+          {itemName} :
+          {#if variable.possible_values !== undefined}
+            <select
+              on:blur={({ target }) => changeValue(itemName, target.value)}
+              on:change={({ target }) => changeValue(itemName, target.value)}
+              value={entitySituationComplement?.[itemName]?.[variable.name] ??
+                variable.default_value}
+            >
+              {#each Object.entries(variable.possible_values) as [symbol, label]}
+                <option value={symbol}>{label}</option>
+              {/each}
+            </select>
+          {:else}
+            <input
+              on:change={({ target }) => changeValue(itemName, target.value)}
+              type="number"
+              value={entitySituationComplement?.[itemName]?.[variable.name] ??
+                variable.default_value}
+            />
+          {/if}
+        </li>
+      {/each}
+    </ul>
+  </section>
+{/if}
+
 {#if variable.referring_variables !== undefined}
   <section>
     <h1>Variables dépendantes</h1>
@@ -114,11 +198,11 @@
     </ul>
   </section>
 {/if}
-
+<!--
 <hr class="my-4" />
 
 <section>
   <h1>JSON</h1>
 
   <pre>{JSON.stringify(variable, null, 2)}</pre>
-</section>
+</section> -->

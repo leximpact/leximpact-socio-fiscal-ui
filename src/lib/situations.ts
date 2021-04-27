@@ -11,6 +11,10 @@ export interface EntitySituation {
   [key: string]: { [date: string]: number | null } | string[]
 }
 
+export interface EntitySituationComplement {
+  [key: string]: boolean | number | string | null
+}
+
 export interface FamilleSituation extends EntitySituation {
   enfants: string[]
   parents: string[]
@@ -35,4 +39,11 @@ export interface Situation {
   foyers_fiscaux: { [name: string]: FoyerFiscalSituation }
   individus: { [name: string]: IndividuSituation }
   menages: { [name: string]: MenageSituation }
+}
+
+export interface SituationComplement {
+  familles: { [name: string]: EntitySituationComplement }
+  foyers_fiscaux: { [name: string]: EntitySituationComplement }
+  individus: { [name: string]: EntitySituationComplement }
+  menages: { [name: string]: EntitySituationComplement }
 }

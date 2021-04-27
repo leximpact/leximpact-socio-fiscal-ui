@@ -5,7 +5,7 @@
     fetch,
     session,
   }: LoadInput): Promise<LoadOutput> {
-    const url = new URL("variables", session.apiBaseUrl).toString()
+    const url = new URL("variables/", session.apiBaseUrl).toString()
     const res = await fetch(url)
     if (!res.ok) {
       return {

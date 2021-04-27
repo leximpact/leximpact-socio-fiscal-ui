@@ -8,7 +8,7 @@
     fetch,
     session,
   }: LoadInput): Promise<LoadOutput> {
-    const url = new URL("parameters", session.apiBaseUrl).toString()
+    const url = new URL("parameters/", session.apiBaseUrl).toString()
     const res = await fetch(url)
     if (!res.ok) {
       return {

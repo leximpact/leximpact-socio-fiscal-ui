@@ -3,6 +3,7 @@
   import type { ValidCalculationQuery } from "$lib/calculations"
   import { newCalculationUrl } from "$lib/calculations"
   import DecompositionTree from "$lib/components/DecompositionTree.svelte"
+  import Latchkey from "$lib/components/latchkeys/Latchkey.svelte"
   import ParameterPane from "$lib/components/parameters/ParameterPane.svelte"
   import TestCaseEdit from "$lib/components/TestCaseEdit.svelte"
   import VariablePane from "$lib/components/variables/VariablePane.svelte"
@@ -121,6 +122,10 @@
         component = DecompositionTree
         properties = {}
         return
+      case "pane4":
+        component = Latchkey
+        properties = {}
+        return
     }
   }
 </script>
@@ -151,6 +156,14 @@
     {decomposition}
     {newSelfTargetUrl}
     open={true}
+    {showNulls}
+    {vectorIndex}
+    {...properties}
+  />
+{:else if component === Latchkey}
+  <Latchkey
+    {decomposition}
+    {newSelfTargetUrl}
     {showNulls}
     {vectorIndex}
     {...properties}

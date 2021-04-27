@@ -11,6 +11,9 @@
   export let variable: Variable
 
   let date = new Date().toISOString().split("T")[0]
+  const simulationRequested = getContext(
+    "simulationRequested",
+  ) as Writable<boolean>
   const situationComplement = getContext(
     "situationComplement",
   ) as Writable<SituationComplement>
@@ -44,6 +47,7 @@
         [variable.name]: itemValue ?? variable.default_value,
       },
     }
+    $simulationRequested = true
   }
 </script>
 

@@ -22,6 +22,9 @@
   )
   const reform = getContext("reform") as Writable<ReformChange>
   let showNulls = false
+  const simulationRequested = getContext(
+    "simulationRequested",
+  ) as Writable<boolean>
   let situation: Situation | undefined = undefined
   let situationComplement = getContext(
     "situationComplement",
@@ -37,6 +40,11 @@
 
   $: if (browser) {
     openWebSocket()
+  }
+
+  $: if ($simulationRequested) {
+    $simulationRequested = false
+    submit()
   }
 
   function changeAxes({ detail }) {

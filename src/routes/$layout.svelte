@@ -9,6 +9,9 @@
   const reform = writable({})
   setContext("reform", reform)
 
+  const simulationRequested = writable(false)
+  setContext("simulationRequested", simulationRequested)
+
   const situationComplement = writable({})
   setContext("situationComplement", situationComplement)
 

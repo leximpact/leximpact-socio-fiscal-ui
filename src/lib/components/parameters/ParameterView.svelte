@@ -12,6 +12,9 @@
   export let parameter: AnyParameter
 
   const reform = getContext("reform") as Writable<Reform>
+  const simulationRequested = getContext(
+    "simulationRequested",
+  ) as Writable<boolean>
   let validStart = undefined
   let validValue = undefined
 
@@ -43,6 +46,7 @@
           value: validValue,
         },
       }
+      $simulationRequested = true
     }
   }
 </script>

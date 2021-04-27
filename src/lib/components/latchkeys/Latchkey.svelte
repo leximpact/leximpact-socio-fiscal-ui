@@ -6,6 +6,13 @@
   import { walkDecomposition } from "$lib/decompositions"
   import AxisX from "./AxisX.svelte"
   import AxisY from "./AxisY.svelte"
+  import FlecheChevron from "./FlecheChevron.svelte"
+  import FlecheLigneVerticale from "./FlecheLigneVerticale.svelte"
+  import FlechePolygoneFleche from "./FlechePolygoneFleche.svelte"
+  import FlechePolygoneTriangle from "./FlechePolygoneTriangle.svelte"
+  import PictoEntreprise from "./PictoEntreprise.svelte"
+  import PictoFemme from "./PictoFemme.svelte"
+  import BarreHorizontale from "./BarreHorizontale.svelte"
   import Row from "./Row.svelte"
 
   export let decomposition: Decomposition
@@ -74,6 +81,13 @@
         <Row {newSelfTargetUrl} />
         <AxisX />
         <AxisY gridlines={false} />
+        <PictoFemme />
+        <PictoEntreprise />
+        <BarreHorizontale />
+        <FlecheLigneVerticale />
+        <FlecheChevron />
+        <FlechePolygoneTriangle />
+        <FlechePolygoneFleche />
       </Svg>
     </LayerCake>
   </div>

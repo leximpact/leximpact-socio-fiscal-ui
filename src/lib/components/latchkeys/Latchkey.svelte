@@ -13,7 +13,7 @@
   import PictoEntreprise from "./PictoEntreprise.svelte"
   import PictoFemme from "./PictoFemme.svelte"
   import BarreHorizontale from "./BarreHorizontale.svelte"
-  import Row from "./Row.svelte"
+  import Rows from "./Rows.svelte"
 
   export let decomposition: Decomposition
   export let newSelfTargetUrl: (urlPath: string) => string
@@ -74,11 +74,11 @@
       ]}
       {xDomain}
       y="short_name"
-      yScale={scaleBand().paddingInner([0.02]).round(true)}
+      yScale={scaleBand().paddingInner([0.1]).round(true)}
       {yDomain}
     >
       <Svg>
-        <Row {newSelfTargetUrl} />
+        <Rows {newSelfTargetUrl} />
         <AxisX />
         <AxisY gridlines={false} />
         <PictoFemme />

@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte"
 
-  const { padding, xRange, yScale } = getContext("LayerCake")
+  const { padding, xRange, yRange, yScale } = getContext("LayerCake")
 
   export let ticks = 4
   export let tickMarks = false
@@ -9,52 +9,45 @@
   export let formatTick = (d) => d
   export let xTick = 0
   export let yTick = 0
-  export let dxTick = 0
-  export let dyTick = -4
-  export let textAnchor = "start"
 
-  $: isBandwidth = typeof $yScale.bandwidth === "function"
+  $: tickVals = Array.isArray(ticks) ? ticks : $yScale.domain()
 
-  $: tickVals = Array.isArray(ticks)
-    ? ticks
-    : isBandwidth
-    ? $yScale.domain()
-    : typeof ticks === "function"
-    ? ticks($yScale.ticks())
-    : $yScale.ticks(ticks)
+  $: yHalfBandwidth = $yScale.bandwidth() / 2
+
+  $: [yRange0, yRange1] = $yRange
 </script>
 
 <g class="axis y-axis" transform="translate({-$padding.left}, 0)">
   {#each tickVals as tick, i}
     <g
       class="tick tick-{tick}"
-      transform="translate({$xRange[0] +
-        (isBandwidth ? $padding.left : 0)}, {$yScale(tick)})"
+      transform="translate({$xRange[0] + $padding.left}, {yRange0 +
+        yRange1 -
+        $yScale(tick)})"
     >
       {#if gridlines !== false}
         <line
           class="gridline"
           x2="100%"
-          y1={yTick + (isBandwidth ? $yScale.bandwidth() / 2 : 0)}
-          y2={yTick + (isBandwidth ? $yScale.bandwidth() / 2 : 0)}
+          y1={yTick - yHalfBandwidth}
+          y2={yTick - yHalfBandwidth}
         />
       {/if}
       {#if tickMarks === true}
         <line
           class="tick-mark"
           x1="0"
-          x2={isBandwidth ? -6 : 6}
-          y1={yTick + (isBandwidth ? $yScale.bandwidth() / 2 : 0)}
-          y2={yTick + (isBandwidth ? $yScale.bandwidth() / 2 : 0)}
+          x2={-6}
+          y1={yTick - yHalfBandwidth}
+          y2={yTick - yHalfBandwidth}
         />
       {/if}
       <text
         x={xTick}
-        y={yTick + (isBandwidth ? $yScale.bandwidth() / 2 : 0)}
-        dx={isBandwidth ? -9 : dxTick}
-        dy={isBandwidth ? 4 : dyTick}
-        style="text-anchor:{isBandwidth ? 'end' : textAnchor};"
-        >{formatTick(tick)}</text
+        y={yTick - yHalfBandwidth}
+        dx={-9}
+        dy={4}
+        style="text-anchor: end;">{formatTick(tick)}</text
       >
     </g>
   {/each}

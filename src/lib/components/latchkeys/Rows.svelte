@@ -10,9 +10,13 @@
   export let stroke = "black"
   export let strokeWidth = 0.1
 
-  const { data, xGet, yGet, yScale } = getContext("LayerCake")
+  const { data, xGet, yGet, yRange, yScale } = getContext("LayerCake")
 
-  function* iterRows(nodes, xGet, yGet, yScale) {
+  $: [yRange0, yRange1] = $yRange
+
+  $: height = $yScale.bandwidth()
+
+  function* iterRows(nodes, xGet, yGet, height) {
     for (const node of nodes) {
       const [x0, x1] = xGet(node)
       let width = x0 - x1
@@ -24,11 +28,10 @@
         width = -width
         x = x0
       }
-      const yVals = yGet(node)
-      const y = yScale.bandwidth ? yVals : yVals[0]
-      const height = yScale.bandwidth
-        ? yScale.bandwidth()
-        : Math.max(0, yVals[1] - yVals[0])
+      const y = yRange0 + yRange1 - yGet(node) - height
+      if (Number.isNaN(y)) {
+        continue
+      }
       yield {
         code: node.code,
         fill: node.children === undefined ? (x0 > x1 ? red : green) : blue,
@@ -43,7 +46,7 @@
 </script>
 
 <g class="column-group">
-  {#each [...iterRows($data, $xGet, $yGet, $yScale)] as { code, fill, fillOpacity, height, width, x, y }, i}
+  {#each [...iterRows($data, $xGet, $yGet, height)] as { code, fill, fillOpacity, height, width, x, y }, i}
     <rect
       class="group-rect"
       data-id={i}

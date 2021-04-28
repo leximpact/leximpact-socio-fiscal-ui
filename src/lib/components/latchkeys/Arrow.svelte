@@ -13,10 +13,6 @@
   export let y: number
   export let yPadding: number
 
-  const blue = "blue"
-  const green = "green"
-  const red = "red"
-
   // const barStrokeWidth = 1
   // const barStrokeHalfWidth = barStrokeWidth / 2
   const chevronHeightWidthRatio = 2.8
@@ -33,7 +29,7 @@
 
   $: chevronWidth = chevronHeight / chevronHeightWidthRatio
 
-  $: fill = node.children === undefined ? (x0 > x1 ? red : green) : blue
+  $: fill = node.children === undefined ? (x0 > x1 ? "red" : "green") : "blue"
 
   $: width = x0 < x1 ? x1 - x0 : x0 - x1
 

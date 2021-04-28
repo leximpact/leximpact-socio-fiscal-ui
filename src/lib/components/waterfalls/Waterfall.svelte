@@ -6,7 +6,7 @@
   import { walkDecomposition } from "$lib/decompositions"
   import AxisX from "./AxisX.svelte"
   import AxisY from "./AxisY.svelte"
-  import Column from "./Column.svelte"
+  import Columns from "./Columns.svelte"
 
   export let decomposition: Decomposition
   export let newSelfTargetUrl: (urlPath: string) => string
@@ -71,7 +71,7 @@
       {yDomain}
     >
       <Svg>
-        <Column {newSelfTargetUrl} />
+        <Columns {newSelfTargetUrl} />
         <AxisX gridlines={false} />
         <AxisY textAnchor="end" />
       </Svg>

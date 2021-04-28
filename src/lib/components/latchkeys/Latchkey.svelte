@@ -1,18 +1,13 @@
 <script lang="ts">
   import { scaleBand } from "d3-scale"
+  import { setContext } from "svelte"
+  import { writable } from "svelte/store"
 
   import { LayerCake, Svg } from "$lib/components/layercake"
   import type { Decomposition } from "$lib/decompositions"
   import { walkDecomposition } from "$lib/decompositions"
   import AxisX from "./AxisX.svelte"
   import AxisY from "./AxisY.svelte"
-  import FlecheChevron from "./FlecheChevron.svelte"
-  import FlecheLigneVerticale from "./FlecheLigneVerticale.svelte"
-  import FlechePolygoneFleche from "./FlechePolygoneFleche.svelte"
-  import FlechePolygoneTriangle from "./FlechePolygoneTriangle.svelte"
-  import PictoEntreprise from "./PictoEntreprise.svelte"
-  import PictoFemme from "./PictoFemme.svelte"
-  import BarreHorizontale from "./BarreHorizontale.svelte"
   import Rows from "./Rows.svelte"
 
   export let decomposition: Decomposition
@@ -21,6 +16,9 @@
   export let vectorIndex: number
 
   let adaptYScale = false
+
+  const showColoredRects = writable(false)
+  setContext("showColoredRects", showColoredRects)
 
   $: data = [...walkDecomposition(decomposition, true)]
 
@@ -65,7 +63,10 @@
 </script>
 
 {#if xDomain.length > 0 && yDomain.length > 0}
-  <div class="h-96 mx-auto pb-36 pl-12 pr-16 pt-4 w-full">
+  <div
+    class="mx-auto pb-36 pl-12 pr-16 pt-4 w-full"
+    style="height: {62 * data.length}px;"
+  >
     <LayerCake
       {data}
       x={(node) => [
@@ -81,19 +82,16 @@
         <Rows {newSelfTargetUrl} />
         <AxisX />
         <AxisY gridlines={false} />
-        <PictoFemme />
-        <PictoEntreprise />
-        <BarreHorizontale />
-        <FlecheLigneVerticale />
-        <FlecheChevron />
-        <FlechePolygoneTriangle />
-        <FlechePolygoneFleche />
       </Svg>
     </LayerCake>
   </div>
 
   <label
     ><input bind:checked={adaptYScale} type="checkbox" /> Adapter en permanence l'échelle
-    des Y.</label
+    des Y</label
+  >
+  <label
+    ><input bind:checked={$showColoredRects} type="checkbox" /> Montrer les rectangles
+    colorés en fond</label
   >
 {/if}

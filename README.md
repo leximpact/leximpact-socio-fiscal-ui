@@ -1,3 +1,11 @@
+---
+
+# Pour consulter la dernière version du projet, merci de vous rendre sur https://git.leximpact.dev/leximpact/leximpact-socio-fiscal-ui/
+
+---
+![](changement-depot-github-gitlab-illustration-small.png)
+---
+
 # Interface socio-fiscale LexImpact
 
 Ceci est le code source de l'application [simulateur-socio-fiscal.leximpact.dev](https://simulateur-socio-fiscal.leximpact.dev).  
